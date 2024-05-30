@@ -64,7 +64,7 @@ export function SortUploadedDataDialog({ open, uploadedData, setUploadedData }: 
     const handleSubmit = async () => {
         if (isSubmissionValid(sortedData)) {
             try {
-                const response = await fetch(`${process.env.REACT_APP_SERVER_BASE_URL}/submit`, {
+                const response = await fetch(`/submit`, {
                     method: 'POST',
                     body: JSON.stringify(sortedData),
                     headers: {

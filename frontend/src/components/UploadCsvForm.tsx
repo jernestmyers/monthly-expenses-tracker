@@ -18,7 +18,7 @@ export function UploadCsvForm({setUploadedData}: Props) {
       const formData = new FormData();
       formData.append('csvfile', file);
       try {
-        const response = await fetch(`${process.env.REACT_APP_SERVER_BASE_URL}/upload`, {
+        const response = await fetch(`/upload`, {
           method: 'POST',
           body: formData,
         })

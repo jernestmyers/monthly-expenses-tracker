@@ -16,9 +16,9 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 8000;
 
-app.use(express.static(path.join(__dirname.replace('backend/src', 'frontend'), 'build')))
+app.use(express.static(path.join(__dirname.split('backend')[0], 'frontend', 'build')))
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname.replace('backend/src', 'frontend'), 'build', 'index.html'))
+  res.sendFile(path.join(__dirname.split('backend')[0], 'frontend', 'build', 'index.html'))
 })
 
 const upload = multer({ dest: 'uploads/' })

@@ -21,7 +21,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname.split('backend')[0], 'frontend', 'build', 'index.html'))
 })
 
-const upload = multer({ dest: 'uploads/' })
+const upload = multer({ storage: multer.memoryStorage() })
 
 app.use(express.json())
 app.use(cors(corsOptions));
@@ -30,12 +30,7 @@ app.post('/upload', upload.single('csvfile'), (req, res) => {
   try {
     if (!req.file) return res.status(400).send('No file was uploaded.')
 
-    const filePath = path.join(__dirname.replace('src', ''), req.file.path);
-    if (!fs.existsSync(filePath)) {
-      return res.status(400).send('Uploaded file not found')
-    }
-
-    const fileContent = fs.readFileSync(filePath, 'utf8');
+    const fileContent = req.file.buffer.toString('utf-8');
   
     Papa.parse(fileContent, {
       header: true,
@@ -58,7 +53,6 @@ app.post('/upload', upload.single('csvfile'), (req, res) => {
       }
     })
 
-    fs.unlinkSync(filePath)
   } catch (error) {
       console.error('Error processing file:', error);
         res.status(500).send('Internal Server Error')

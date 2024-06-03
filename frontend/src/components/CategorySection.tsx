@@ -71,7 +71,7 @@ export function CategorySection({
           <TableHead>
             <TableRow>
               {finalCategoryColumns.map((col) => (
-                <TableCell>{col}</TableCell>
+                <TableCell key={col}>{col}</TableCell>
               ))}
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -79,7 +79,7 @@ export function CategorySection({
           <TableBody>
             {activeTab === 0 &&
               data.map((d) => (
-                <TableRow>
+                <TableRow key={d.id}>
                   <TableCell>{d.date}</TableCell>
                   <TableCell>{d.description}</TableCell>
                   <TableCell>{d.memo}</TableCell>

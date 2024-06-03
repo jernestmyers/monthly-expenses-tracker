@@ -1,5 +1,5 @@
 export type Tab = {
-  label: string | React.ReactNode;
+  label: string;
   content: React.ReactNode;
 };
 

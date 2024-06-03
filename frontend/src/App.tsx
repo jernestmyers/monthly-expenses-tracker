@@ -65,7 +65,7 @@ function App() {
             scrollButtons="auto"
           >
             {TABS.map((tab, i) => (
-              <Tab label={tab.label} {...a11yProps(i)} />
+              <Tab label={tab.label} key={tab.label} {...a11yProps(i)} />
             ))}
           </Tabs>
           <div className="flex gap-10">
@@ -82,6 +82,7 @@ function App() {
           {month && <div>
             {TRANSACTION_CATEGORIES.map((cat, index) => (
               <CategorySection
+                key={cat.label}
                 activeTab={Number(month) - 1}
                 id={index}
                 category={cat}

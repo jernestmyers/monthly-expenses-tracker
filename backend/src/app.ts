@@ -3,13 +3,14 @@ import multer from 'multer';
 import Papa from 'papaparse'
 import fs from 'fs'
 import path from 'path'
-import { ChaseCreditJsonObject, getCsvOrigin, SchwabJsonObject } from './utils/getCsvOrigin';
+import { ChaseCheckingJsonObject, ChaseCreditJsonObject, getCsvOrigin, SchwabJsonObject } from './utils/getCsvOrigin';
 import { formatChaseCreditCardCsv } from './utils/formatChaseCreditCardCsv';
 import { formatSchwabCsv } from './utils/formatSchwabCsv';
 import cors from 'cors';
 import { corsOptions } from './configs/corsOptions';
 import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv';
+import { formatChaseCheckingCsv } from './utils/formatChaseCheckingCsv';
 
 dotenv.config();
 
@@ -43,6 +44,9 @@ app.post('/upload', upload.single('csvfile'), (req, res) => {
         } else if (csvOrigin === 'schwab') {
           const formattedData = formatSchwabCsv(dataWithId as SchwabJsonObject[]);
           res.status(201).send(formattedData)
+        } else if (csvOrigin === 'chase_checking') {
+          const formattedData = formatChaseCheckingCsv(dataWithId as ChaseCheckingJsonObject[]);
+          res.status(200).send(formattedData)
         } else {
           res.status(200).send(dataWithId)
         }

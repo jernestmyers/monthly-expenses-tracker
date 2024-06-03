@@ -44,11 +44,34 @@ export type ChaseCreditJsonObject = {
     'Memo': string;
 }
 
+const CHASE_CHECKING_FIELDS = [
+    'Details',
+    'Posting Date',
+    'Description',
+    'Amount',
+    'Type',
+    'Balance',
+    'Check or Slip #',
+]
+
+export type ChaseCheckingJsonObject = {
+    id: string;
+    'Details': string;
+    'Posting Date': string;
+    'Description': string;
+    'Amount': string;
+    'Type': string;
+    'Balance': string;
+    'Check or Slip #': string;
+}
+
 export function getCsvOrigin(fields: string[] | undefined) {
     if (isEqual(fields, SCHWAB_FIELDS)) {
         return 'schwab'
     } else if (isEqual(fields, CHASE_CC_FIELDS)) {
         return 'chase_credit_card'
+    } else if (isEqual(fields, CHASE_CHECKING_FIELDS)) {
+        return 'chase_checking'
     } else {
         return
     }

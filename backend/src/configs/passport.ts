@@ -5,7 +5,7 @@ import { Strategy as JwtStrategy, ExtractJwt, StrategyOptionsWithoutRequest } fr
 import pool from '../db'
 import dotenv from 'dotenv'
 
-dotenv.config();
+dotenv.config({path: '../../.env'});
 
 passport.use(new LocalStrategy(
     { usernameField: 'username' },

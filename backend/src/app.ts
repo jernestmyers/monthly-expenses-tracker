@@ -14,7 +14,7 @@ import { formatChaseCheckingCsv } from './utils/formatChaseCheckingCsv';
 import passport from './configs/passport';
 import authRoutes from './routes/auth';
 
-dotenv.config();
+dotenv.config({path: '../.env'});
 
 const app = express();
 const port = process.env.PORT || 8000;

@@ -36,5 +36,8 @@
     "lint-staged": "^15.2.5",
     "prettier": "3.2.5",
     "typescript-eslint": "^7.10.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
   }
 }

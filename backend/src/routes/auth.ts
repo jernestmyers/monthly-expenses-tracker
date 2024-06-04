@@ -7,7 +7,7 @@ import { body, validationResult } from 'express-validator'
 import dotenv from 'dotenv'
 import { User } from '../models/User'
 
-dotenv.config();
+dotenv.config({ path: '../../.env' });
 
 const router = Router();
 

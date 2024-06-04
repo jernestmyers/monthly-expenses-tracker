@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv';
 import { formatChaseCheckingCsv } from './utils/formatChaseCheckingCsv';
 import passport from './configs/passport';
-import authRoutes from './routes/auth';
+import authRoutes, { authenticateJWT } from './routes/auth';
 
 dotenv.config({path: '../.env'});
 
@@ -20,9 +20,6 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 app.use(express.static(path.join(__dirname.split('backend')[0], 'frontend', 'build')))
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname.split('backend')[0], 'frontend', 'build', 'index.html'))
-})
 
 const upload = multer({ storage: multer.memoryStorage() })
 
@@ -32,7 +29,11 @@ app.use(express.urlencoded({ extended: false }))
 app.use(passport.initialize())
 app.use('/auth', authRoutes)
 
-app.post('/upload', upload.single('csvfile'), (req, res) => {
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname.split('backend')[0], 'frontend', 'build', 'index.html'))
+})
+
+app.post('/upload', authenticateJWT, upload.single('csvfile'), (req, res) => {
   try {
     if (!req.file) return res.status(400).send('No file was uploaded.')
 
@@ -69,7 +70,7 @@ app.post('/upload', upload.single('csvfile'), (req, res) => {
 
 })
 
-app.post('/submit', (req, res) => {
+app.post('/submit', authenticateJWT, (req, res) => {
   console.log(req.headers)
   console.log(req.body)
   res.sendStatus(201)

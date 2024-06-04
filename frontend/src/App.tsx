@@ -6,6 +6,8 @@ import { a11yProps } from './utils/a11yProps';
 import { UploadCsvForm, ResponseObject } from './components/UploadCsvForm';
 import { CategorySection } from './components/CategorySection';
 import { SortUploadedDataDialog} from './components/SortUploadedDataDialog'
+import { Header } from './components/Header'
+import { NoData} from './components/NoData'
 
 function App() {
   const [expandedSections, setExpandedSections] = useState([0]);
@@ -28,11 +30,11 @@ function App() {
     navigate(`/${year.toString()}/01`)
   }
 
+  const tabData = null;
+
   return (
     <div className="grid grid-cols-[150px_auto] grid-rows-[auto_1fr] h-screen">
-      <header className={"col-span-2"}>
-          <h1 className="text-3xl">household finance tracker</h1>
-      </header>
+      <Header />
       <aside className="bg-gray-200">
         <nav>
           <ul className="text-lg">
@@ -68,29 +70,35 @@ function App() {
               <Tab label={tab.label} key={tab.label} {...a11yProps(i)} />
             ))}
           </Tabs>
-          <div className="flex gap-10">
-            <button
-              onClick={() =>
-                setExpandedSections(TRANSACTION_CATEGORIES.map((_, ind) => ind))
-              }
-            >
-              expand all
-            </button>
-            <span>|</span>
-            <button onClick={() => setExpandedSections([])}>collapse all</button>
-          </div>
-          {month && <div>
-            {TRANSACTION_CATEGORIES.map((cat, index) => (
-              <CategorySection
-                key={cat.label}
-                activeTab={Number(month) - 1}
-                id={index}
-                category={cat}
-                expandedSections={expandedSections}
-                setExpandedSections={setExpandedSections}
-              />
-            ))}
-          </div>}
+          {tabData ? (
+            <>
+            <div className="flex gap-10">
+              <button
+                onClick={() =>
+                  setExpandedSections(TRANSACTION_CATEGORIES.map((_, ind) => ind))
+                }
+              >
+                expand all
+              </button>
+              <span>|</span>
+              <button onClick={() => setExpandedSections([])}>collapse all</button>
+            </div>
+              {month && (<div>
+                {TRANSACTION_CATEGORIES.map((cat, index) => (
+                  <CategorySection
+                    key={cat.label}
+                    activeTab={Number(month) - 1}
+                    id={index}
+                    category={cat}
+                    expandedSections={expandedSections}
+                    setExpandedSections={setExpandedSections}
+                  />
+                ))}
+              </div>)}
+            </>) : (
+              <NoData month={month} year={ year }/>
+            )
+          }
         </div>
       </main>
       {uploadedData && (

@@ -1,5 +1,5 @@
 export const corsOptions = {
-    origin: 'http://localhost:3000',
-    methods: 'GET,POST',
-    allowedHeaders: ['Content-Type']
-}
+  origin: 'http://localhost:3000',
+  methods: 'GET,POST',
+  allowedHeaders: ['Content-Type'],
+};

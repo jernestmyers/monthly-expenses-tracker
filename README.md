@@ -1,6 +1,7 @@
 # household finance tracker (in progress)
 
 ## why?
+
 my wife and i have been maintaining spreadsheets for years to track our household finances. we have always used the spreadsheets to determine who owes who and how much at the end of the month. over the years our finances have gotten more complicated by kids and rental properties, and this web app aims to streamline this process.
 
 currently, we manually input each transaction into a category and use some spreadhseet equations to determine costs by category and the "square up" cost each month. this entails having our financial statement open in one browser or tab and tediously going back and forth to input every transaction. come tax season, we then use the spreadsheet to determine calculations related to tax filing, most notably IRS Schedule E transactions.
@@ -12,13 +13,16 @@ in the UI, a tooltip will be rendered next to each category that displays the to
 ultimately this web app is for personal use and its current trajectory is to suit our needs, but perhaps its future could be configured for a broader audience. as a bonus, this web app is an opportunity to deepen my full stack skills!
 
 ## live version
+
 [https://monthly-expenses-tracker.adaptable.app](https://monthly-expenses-tracker.adaptable.app)
 
 ## stack
+
 - frontend: react, typescript, tailwind, react-router-dom, material UI
 - backend: node, express, postgres, raw SQL, multer, papaparse
 
 ## notes/todos
+
 - wire up auth with postman and JWT
 - configure postgres database
 - enable transaction edits

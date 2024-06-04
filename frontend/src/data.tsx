@@ -68,7 +68,10 @@ const RENTAL_CATEGORIES = [
   { label: 'Improvements' },
 ];
 
-const COST_BASIS_CATEGORIES = [{ label: 'Improvements' }, { label: 'Maintenance' }];
+const COST_BASIS_CATEGORIES = [
+  { label: 'Improvements' },
+  { label: 'Maintenance' },
+];
 
 export const TRANSACTION_CATEGORIES: TransactionCategory[] = [
   { label: 'Income' },
@@ -110,4 +113,4 @@ export const data: Row[] = [];
 
 export const FISCAL_YEARS = [2023, 2024];
 
-export const PAYEES = ['SM', 'JM']
+export const PAYEES = ['SM', 'JM'];

@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import { Login } from './components/Login';
 import { Register } from './components/Register';
-import { PrivateRoute } from './components/PrivateRoute'
+import { PrivateRoute } from './components/PrivateRoute';
 import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
@@ -26,7 +26,7 @@ const router = createBrowserRouter([
       <PrivateRoute>
         <App />
       </PrivateRoute>
-    )
+    ),
   },
   {
     path: '/:year',
@@ -34,7 +34,7 @@ const router = createBrowserRouter([
       <PrivateRoute>
         <App />
       </PrivateRoute>
-    )
+    ),
   },
   {
     path: '/:year/:month',
@@ -42,7 +42,7 @@ const router = createBrowserRouter([
       <PrivateRoute>
         <App />
       </PrivateRoute>
-    )
+    ),
   },
   {
     path: '/login',
@@ -51,7 +51,7 @@ const router = createBrowserRouter([
   {
     path: '/register',
     element: <Register />,
-  }
+  },
 ]);
 
 root.render(

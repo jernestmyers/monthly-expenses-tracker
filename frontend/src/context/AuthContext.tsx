@@ -1,92 +1,91 @@
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react'
+import React, {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useEffect,
+} from 'react';
 import { jwtDecode } from 'jwt-decode';
 
 type UserData = {
-    id: number;
-    username: string;
-    iat: number;
-    exp: number;
-}
+  id: number;
+  username: string;
+  iat: number;
+  exp: number;
+};
 
 interface AuthContextType {
-    currentUser: UserData | null;
-    register: (username: string, password: string) => Promise<void>;
-    login: (username: string, password: string) => Promise<void>;
-    logout: () => void;
+  currentUser: UserData | null;
+  register: (username: string, password: string) => Promise<void>;
+  login: (username: string, password: string) => Promise<void>;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function useAuth() {
-    const context = useContext(AuthContext)
-    if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider')
-    }
-    return context
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 }
 
 type Props = {
-    children: ReactNode;
-}
+  children: ReactNode;
+};
 
 export function AuthProvider({ children }: Props) {
-    const [currentUser, setCurrentUser] = useState<UserData | null>(null);
-    
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            setCurrentUser(jwtDecode(token))
-        }
-    }, [])
+  const [currentUser, setCurrentUser] = useState<UserData | null>(null);
 
-    const register = async (username: string, password: string) => {
-        const response = await fetch('auth/register', {
-            method: 'POST',
-            body: JSON.stringify({ username, password }),
-            headers: {
-                'content-type': 'application/json'
-            }
-        })
-
-        if (!response.ok) throw new Error('Account creation failed')
-        const { token } = await response.json();
-        localStorage.setItem('token', token)
-        setCurrentUser(jwtDecode(token))
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setCurrentUser(jwtDecode(token));
     }
+  }, []);
 
-    const login = async (username: string, password: string) => {
-        const response = await fetch('auth/login', {
-            method: 'POST',
-            body: JSON.stringify({ username, password }),
-            headers: {
-                'content-type': 'application/json'
-            }
-        })
+  const register = async (username: string, password: string) => {
+    const response = await fetch('auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ username, password }),
+      headers: {
+        'content-type': 'application/json',
+      },
+    });
 
-        if (!response.ok) throw new Error('Login failed')
-        const { token } = await response.json();
-        localStorage.setItem('token', token)
-        setCurrentUser(jwtDecode(token))
-    }
+    if (!response.ok) throw new Error('Account creation failed');
+    const { token } = await response.json();
+    localStorage.setItem('token', token);
+    setCurrentUser(jwtDecode(token));
+  };
 
-    const logout = () => {
-        localStorage.removeItem('token')
-        setCurrentUser(null)
-    }
+  const login = async (username: string, password: string) => {
+    const response = await fetch('auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ username, password }),
+      headers: {
+        'content-type': 'application/json',
+      },
+    });
 
-    const value = {
-        currentUser,
-        register,
-        login,
-        logout,
-    }
+    if (!response.ok) throw new Error('Login failed');
+    const { token } = await response.json();
+    localStorage.setItem('token', token);
+    setCurrentUser(jwtDecode(token));
+  };
 
-    return (
-        <AuthContext.Provider
-            value={value}
-        >
-            { children }
-        </AuthContext.Provider>
-    )
+  const logout = () => {
+    localStorage.removeItem('token');
+    setCurrentUser(null);
+  };
+
+  const value = {
+    currentUser,
+    register,
+    login,
+    logout,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
-

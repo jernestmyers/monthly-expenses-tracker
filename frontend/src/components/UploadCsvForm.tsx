@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { Input } from '@mui/material';
-import { Row } from '../data'
+import { Row } from '../data';
 
-export type ResponseObject = Omit<Row, 'paidBy'>
+export type ResponseObject = Omit<Row, 'paidBy'>;
 
 type Props = {
-  setUploadedData: React.Dispatch<React.SetStateAction<null | ResponseObject[]>>
-}
+  setUploadedData: React.Dispatch<
+    React.SetStateAction<null | ResponseObject[]>
+  >;
+};
 
-export function UploadCsvForm({setUploadedData}: Props) {
+export function UploadCsvForm({ setUploadedData }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,11 +23,17 @@ export function UploadCsvForm({setUploadedData}: Props) {
         const response = await fetch(`/upload`, {
           method: 'POST',
           body: formData,
-        })
+        });
         const data = await response.json();
         setUploadedData(data as ResponseObject[]);
       } catch (error) {
-        setError(error instanceof Error ? error.message : typeof error === 'string' ? error : 'unknown error')
+        setError(
+          error instanceof Error
+            ? error.message
+            : typeof error === 'string'
+              ? error
+              : 'unknown error',
+        );
       }
     } else {
       setError('Invalid file type');
@@ -33,14 +41,14 @@ export function UploadCsvForm({setUploadedData}: Props) {
   };
 
   return (
-      <>
-        <Input
-          type="file"
-          inputProps={{ accept: '.csv' }}
-          onChange={handleUpload}
-          name="csvfile"
-        />
-        {error && <>{error}</>}
-      </>
+    <>
+      <Input
+        type="file"
+        inputProps={{ accept: '.csv' }}
+        onChange={handleUpload}
+        name="csvfile"
+      />
+      {error && <>{error}</>}
+    </>
   );
 }

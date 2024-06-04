@@ -11,6 +11,8 @@ import { corsOptions } from './configs/corsOptions';
 import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv';
 import { formatChaseCheckingCsv } from './utils/formatChaseCheckingCsv';
+import passport from './configs/passport';
+import authRoutes from './routes/auth';
 
 dotenv.config();
 
@@ -26,6 +28,9 @@ const upload = multer({ storage: multer.memoryStorage() })
 
 app.use(express.json())
 app.use(cors(corsOptions));
+app.use(express.urlencoded({ extended: false }))
+app.use(passport.initialize())
+app.use('/auth', authRoutes)
 
 app.post('/upload', upload.single('csvfile'), (req, res) => {
   try {

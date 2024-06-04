@@ -12,16 +12,8 @@
     "start:backend": "cd backend && npm run start:compiled",
     "start": "npm run start:backend"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,css,md}": [
-      "prettier --write",
-      "git add"
-    ]
+    "*.{js,jsx,ts,tsx,css,md}": "prettier --write"
   },
   "author": "",
   "license": "ISC",

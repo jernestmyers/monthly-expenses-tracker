@@ -33,11 +33,9 @@ router.post(
         [username],
       );
       if (result.rows[0]) {
-        res
-          .status(409)
-          .json({
-            message: `The username "${username}" already exists. Please try again.`,
-          });
+        res.status(409).json({
+          message: `The username "${username}" already exists. Please try again.`,
+        });
       } else {
         const newUser = await client.query(
           'INSERT INTO users (id, username, password, created_at) VALUES (DEFAULT, $1, $2, DEFAULT) RETURNING *',
@@ -78,11 +76,9 @@ router.post(
       client.release();
 
       if (result.rowCount === 0) {
-        return res
-          .status(400)
-          .json({
-            message: `A user with username "${username}" was not found. Please try again.`,
-          });
+        return res.status(400).json({
+          message: `A user with username "${username}" was not found. Please try again.`,
+        });
       }
 
       const user: User = result.rows[0];

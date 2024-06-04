@@ -2,8 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import { Login } from './components/Login';
+import { PrivateRoute } from './components/PrivateRoute'
 import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 
 // MUI defaults to roboto
 import '@fontsource/roboto/300.css';
@@ -18,21 +21,39 @@ const root = ReactDOM.createRoot(
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: (
+      <PrivateRoute>
+        <App />
+      </PrivateRoute>
+    )
   },
   {
     path: '/:year',
-    element: <App />,
+    element: (
+      <PrivateRoute>
+        <App />
+      </PrivateRoute>
+    )
   },
   {
     path: '/:year/:month',
-    element: <App />,
+    element: (
+      <PrivateRoute>
+        <App />
+      </PrivateRoute>
+    )
   },
+  {
+    path: '/login',
+    element: <Login />,
+  }
 ]);
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>,
 );
 

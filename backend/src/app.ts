@@ -28,6 +28,12 @@ app.use(
   express.static(path.join(__dirname.split('backend')[0], 'frontend', 'build')),
 );
 
+app.get('*', (req, res) => {
+  res.sendFile(
+    path.join(__dirname.split('backend')[0], 'frontend', 'build', 'index.html'),
+  );
+});
+
 const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(express.json());
@@ -35,12 +41,6 @@ app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 app.use('/auth', authRoutes);
-
-app.get('*', (req, res) => {
-  res.sendFile(
-    path.join(__dirname.split('backend')[0], 'frontend', 'build', 'index.html'),
-  );
-});
 
 app.post('/upload', authenticateJWT, upload.single('csvfile'), (req, res) => {
   try {

@@ -8,9 +8,11 @@ import {
   ChaseCreditJsonObject,
   getCsvOrigin,
   SchwabJsonObject,
+  CapitalOneCreditJsonObject,
 } from './utils/getCsvOrigin';
 import { formatChaseCreditCardCsv } from './utils/formatChaseCreditCardCsv';
 import { formatSchwabCsv } from './utils/formatSchwabCsv';
+import { formatCapitalOneCreditCardCsv } from './utils/formatCapitalOneCreditCardCsv';
 import cors from 'cors';
 import { corsOptions } from './configs/corsOptions';
 import { v4 as uuidv4 } from 'uuid';
@@ -71,6 +73,11 @@ app.post('/upload', authenticateJWT, upload.single('csvfile'), (req, res) => {
             dataWithId as ChaseCheckingJsonObject[],
           );
           res.status(200).send(formattedData);
+        } else if (csvOrigin === 'capital_one_credit_card') {
+          const formattedData = formatCapitalOneCreditCardCsv(
+            dataWithId as CapitalOneCreditJsonObject[],
+          );
+          res.status(200).send(formattedData);
         } else {
           res.status(200).send(dataWithId);
         }
@@ -87,7 +94,6 @@ app.post('/upload', authenticateJWT, upload.single('csvfile'), (req, res) => {
 });
 
 app.post('/submit', authenticateJWT, (req, res) => {
-  console.log(req.headers);
   console.log(req.body);
   res.sendStatus(201);
 });

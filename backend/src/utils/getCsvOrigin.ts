@@ -23,6 +23,28 @@ export type SchwabJsonObject = {
   RunningBalance: string;
 };
 
+const CAPITAL_ONE_CC_FIELDS = [
+  'Transaction Date',
+  'Posted Date',
+  'Card No.',
+  'Description',
+  'Category',
+  'Debit',
+  'Credit',
+];
+
+export type CapitalOneCreditJsonObject = {
+  id: string;
+  'Transaction Date': string;
+  'Posted Date': string;
+  'Card No.': string;
+  Description: string;
+  Category: string;
+  Type: string;
+  Debit: string;
+  Credit: string;
+};
+
 const CHASE_CC_FIELDS = [
   'Transaction Date',
   'Post Date',
@@ -72,6 +94,8 @@ export function getCsvOrigin(fields: string[] | undefined) {
     return 'chase_credit_card';
   } else if (isEqual(fields, CHASE_CHECKING_FIELDS)) {
     return 'chase_checking';
+  } else if (isEqual(fields, CAPITAL_ONE_CC_FIELDS)) {
+    return 'capital_one_credit_card';
   } else {
     return;
   }

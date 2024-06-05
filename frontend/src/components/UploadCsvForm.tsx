@@ -20,9 +20,13 @@ export function UploadCsvForm({ setUploadedData }: Props) {
       const formData = new FormData();
       formData.append('csvfile', file);
       try {
+        const token = localStorage.getItem('token');
         const response = await fetch(`/upload`, {
           method: 'POST',
           body: formData,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         const data = await response.json();
         setUploadedData(data as ResponseObject[]);

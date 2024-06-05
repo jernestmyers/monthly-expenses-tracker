@@ -41,7 +41,14 @@ export function AuthProvider({ children }: Props) {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      setCurrentUser(jwtDecode(token));
+      const user: UserData = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      if (user.exp < currentTime) {
+        localStorage.removeItem('token');
+        setCurrentUser(null);
+      } else {
+        setCurrentUser(user);
+      }
     }
   }, []);
 

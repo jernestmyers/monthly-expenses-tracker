@@ -60,9 +60,9 @@ export function Login() {
           Sign in
         </Button>
       </form>
-      <div>
+      {/* <div>
         <Link href="/register">Create account</Link>
-      </div>
+      </div> */}
     </div>
   );
 }

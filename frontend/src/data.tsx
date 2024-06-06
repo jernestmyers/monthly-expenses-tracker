@@ -55,41 +55,64 @@ export const TABS: Tab[] = [
 ];
 
 export type TransactionCategory = {
+  id: number;
   label: string;
-  subCategories?: TransactionCategory[];
+  subcategories?: TransactionSubcategory[];
+};
+
+export type TransactionSubcategory = Omit<
+  TransactionCategory,
+  'subcategories'
+> & {
+  parentId: number;
 };
 
 const RENTAL_CATEGORIES = [
-  { label: 'Utilities' },
-  { label: 'Repairs' },
-  { label: 'Supplies' },
-  { label: 'Cleaning & maintenance' },
-  { label: 'Travel' },
-  { label: 'Improvements' },
+  { id: 1, label: 'Utilities' },
+  { id: 2, label: 'Repairs' },
+  { id: 3, label: 'Supplies' },
+  { id: 4, label: 'Cleaning & maintenance' },
+  { id: 5, label: 'Travel' },
+  { id: 6, label: 'Improvements' },
 ];
 
 const COST_BASIS_CATEGORIES = [
-  { label: 'Improvements' },
-  { label: 'Maintenance' },
+  { id: 1, label: 'Improvements' },
+  { id: 2, label: 'Maintenance' },
 ];
 
 export const TRANSACTION_CATEGORIES: TransactionCategory[] = [
-  { label: 'Income' },
-  { label: 'Bills' },
-  { label: 'Groceries' },
-  { label: 'Dining/Going Out' },
-  { label: 'Transportation' },
-  { label: 'Rental 1', subCategories: RENTAL_CATEGORIES },
-  { label: 'Rental 2', subCategories: RENTAL_CATEGORIES },
-  { label: 'Rental 3', subCategories: RENTAL_CATEGORIES },
-  { label: 'Home', subCategories: COST_BASIS_CATEGORIES },
-  // { label: process.env.REACT_APP_RENTAL_ONE!, subCategories: RENTAL_CATEGORIES },
-  // { label: process.env.REACT_APP_RENTAL_TWO!, subCategories: RENTAL_CATEGORIES },
-  // { label: process.env.REACT_APP_RENTAL_TWO!, subCategories: RENTAL_CATEGORIES },
-  // { label: process.env.REACT_APP_HOMESTEAD!, subCategories: COST_BASIS_CATEGORIES },
-  { label: 'Miscellaneous' },
-  { label: 'JM Personal' },
-  { label: 'SM Personal' },
+  { id: 1, label: 'Income' },
+  { id: 2, label: 'Bills' },
+  { id: 3, label: 'Groceries' },
+  { id: 4, label: 'Dining/Going Out' },
+  { id: 5, label: 'Transportation' },
+  {
+    id: 6,
+    label: 'Rental 1',
+    subcategories: RENTAL_CATEGORIES.map((cat) => ({ ...cat, parentId: 6 })),
+  },
+  {
+    id: 7,
+    label: 'Rental 2',
+    subcategories: RENTAL_CATEGORIES.map((cat) => ({ ...cat, parentId: 7 })),
+  },
+  {
+    id: 8,
+    label: 'Rental 3',
+    subcategories: RENTAL_CATEGORIES.map((cat) => ({ ...cat, parentId: 8 })),
+  },
+  {
+    id: 9,
+    label: 'Home',
+    subcategories: COST_BASIS_CATEGORIES.map((cat) => ({
+      ...cat,
+      parentId: 9,
+    })),
+  },
+  { id: 10, label: 'Miscellaneous' },
+  { id: 11, label: 'JM Personal' },
+  { id: 12, label: 'SM Personal' },
 ];
 
 export const TRANSACTION_COLUMNS = [

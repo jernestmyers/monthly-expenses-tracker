@@ -28,7 +28,7 @@ export function CategorySection({
   expandedSections,
   setExpandedSections,
 }: Props) {
-  const finalCategoryColumns = category.subCategories
+  const finalCategoryColumns = category.subcategories
     ? TRANSACTION_COLUMNS.slice(0, 3)
         .concat('Subcategory')
         .concat(TRANSACTION_COLUMNS.slice(3))
@@ -83,7 +83,7 @@ export function CategorySection({
                   <TableCell>{d.date}</TableCell>
                   <TableCell>{d.description}</TableCell>
                   <TableCell>{d.memo}</TableCell>
-                  {category.subCategories && <TableCell>testing</TableCell>}
+                  {category.subcategories && <TableCell>testing</TableCell>}
                   <TableCell>${d.amount}</TableCell>
                   <TableCell>{d.paidBy ?? 'N/A'}</TableCell>
                   <TableCell>

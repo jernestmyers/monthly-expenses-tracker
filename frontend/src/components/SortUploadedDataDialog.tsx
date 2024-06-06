@@ -279,7 +279,7 @@ function SubcategoriesContent({
     const category = TRANSACTION_CATEGORIES.find(
       (cat) => cat.label === transaction.category,
     );
-    if (category?.subCategories) {
+    if (category?.subcategories) {
       return (
         <FormControl variant="standard" sx={{ minWidth: 120 }} size="small">
           <InputLabel id="subcategory-selector">Subcategory</InputLabel>
@@ -291,7 +291,7 @@ function SubcategoriesContent({
             }
             value={getValue(tableData, sortedData, 'subCategory')}
           >
-            {category.subCategories.map((cat) => (
+            {category.subcategories.map((cat) => (
               <MenuItem value={cat.label}>{cat.label}</MenuItem>
             ))}
           </Select>

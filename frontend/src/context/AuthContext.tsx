@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
-type UserData = {
+export type UserData = {
   id: number;
   username: string;
   iat: number;

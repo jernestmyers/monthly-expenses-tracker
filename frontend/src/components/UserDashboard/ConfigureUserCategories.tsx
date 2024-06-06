@@ -1,21 +1,10 @@
 import React, { useState } from 'react';
-import {
-  Button,
-  FormControl,
-  FormControlLabel,
-  RadioGroup,
-  Radio,
-  Step,
-  StepButton,
-  Stepper,
-  TextField,
-  Tooltip,
-} from '@mui/material';
+import { Button, TextField, Tooltip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
 import AddIcon from '@mui/icons-material/Add';
 import CircleIcon from '@mui/icons-material/Circle';
-import { TransactionCategory } from '../data';
+import { TransactionCategory } from '../../data';
 
 const DEFAULT_CATEGORIES: TransactionCategory[] = [
   { id: 1, label: 'Income' },
@@ -28,53 +17,13 @@ const DEFAULT_CATEGORIES: TransactionCategory[] = [
   { id: 8, label: 'Miscellaneous' },
 ];
 
-const STEPS = [
-  'Configure your household categories and subcategories',
-  'Configure your household payers/payees',
-  'Review and submit',
-];
-
-export function UserDashboard() {
-  const [activeStep, setActiveStep] = useState(0);
-
-  return (
-    <div className="w-3/4 self-center">
-      <h2 className="text-xl my-3">
-        Configure and edit your household settings
-      </h2>
-      <Stepper nonLinear activeStep={activeStep} alternativeLabel>
-        {STEPS.map((label, index) => (
-          <Step key={label}>
-            <StepButton onClick={() => setActiveStep(index)}>
-              {label}
-            </StepButton>
-          </Step>
-        ))}
-      </Stepper>
-      {activeStep === 0 && <ConfigureCategories />}
-      <div className="flex justify-center gap-x-12">
-        <Button
-          disabled={activeStep === 0}
-          onClick={() => setActiveStep((prevActiveStep) => prevActiveStep - 1)}
-        >
-          Back
-        </Button>
-        <Button
-          disabled={activeStep === 2}
-          onClick={() => setActiveStep((prevActiveStep) => prevActiveStep + 1)}
-        >
-          Next
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-type ConfigureCategoriesProps = {
+type ConfigureUserCategoriesProps = {
   userCategories?: TransactionCategory[];
 };
 
-function ConfigureCategories({ userCategories }: ConfigureCategoriesProps) {
+export function ConfigureUserCategories({
+  userCategories,
+}: ConfigureUserCategoriesProps) {
   const [categories, setCategories] = useState<TransactionCategory[]>(
     userCategories?.length ? userCategories : DEFAULT_CATEGORIES,
   );
@@ -166,8 +115,6 @@ function ConfigureCategories({ userCategories }: ConfigureCategoriesProps) {
       }),
     );
   };
-
-  console.log(categories);
 
   return (
     <ul className="mt-3">

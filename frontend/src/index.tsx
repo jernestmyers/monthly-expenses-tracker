@@ -5,6 +5,8 @@ import App from './App';
 import { Login } from './components/Login';
 import { Register } from './components/Register';
 import { PrivateRoute } from './components/PrivateRoute';
+import { MainPageLayout } from './components/Layouts/MainPageLayout';
+import { DefaultPageLayout } from './components/Layouts/DefaultPageLayout';
 import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
@@ -25,7 +27,9 @@ const router = createBrowserRouter([
     path: '/',
     element: (
       <PrivateRoute>
-        <App />
+        <MainPageLayout>
+          <App />
+        </MainPageLayout>
       </PrivateRoute>
     ),
   },
@@ -33,7 +37,9 @@ const router = createBrowserRouter([
     path: '/:year',
     element: (
       <PrivateRoute>
-        <App />
+        <MainPageLayout>
+          <App />
+        </MainPageLayout>
       </PrivateRoute>
     ),
   },
@@ -41,13 +47,19 @@ const router = createBrowserRouter([
     path: '/:year/:month',
     element: (
       <PrivateRoute>
-        <App />
+        <MainPageLayout>
+          <App />
+        </MainPageLayout>
       </PrivateRoute>
     ),
   },
   {
     path: '/login',
-    element: <Login />,
+    element: (
+      <DefaultPageLayout>
+        <Login />
+      </DefaultPageLayout>
+    ),
   },
   // {
   //   path: '/register',

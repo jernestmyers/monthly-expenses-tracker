@@ -6,7 +6,6 @@ import { a11yProps } from './utils/a11yProps';
 import { UploadCsvForm, ResponseObject } from './components/UploadCsvForm';
 import { CategorySection } from './components/CategorySection';
 import { SortUploadedDataDialog } from './components/SortUploadedDataDialog';
-import { Header } from './components/Header';
 import { NoData } from './components/NoData';
 
 function App() {
@@ -35,8 +34,7 @@ function App() {
   const tabData = null;
 
   return (
-    <div className="grid grid-cols-[150px_auto] grid-rows-[auto_1fr] h-screen">
-      <Header />
+    <>
       <aside className="bg-gray-200">
         <nav>
           <ul className="text-lg">
@@ -119,7 +117,7 @@ function App() {
           setUploadedData={setUploadedData}
         />
       )}
-    </div>
+    </>
   );
 }
 

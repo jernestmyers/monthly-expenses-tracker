@@ -1,11 +1,15 @@
 import { useAuth } from '../context/AuthContext';
 import { AccountMenu } from './AccountMenu';
 
-export function Header() {
+type Props = {
+  className: string;
+};
+
+export function Header({ className }: Props) {
   const { currentUser } = useAuth();
 
   return (
-    <header className={'flex justify-between col-span-2'}>
+    <header className={className}>
       <h1 className="text-3xl">
         <a href="/">household finance tracker</a>
       </h1>

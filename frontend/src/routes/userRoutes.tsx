@@ -1,17 +1,16 @@
 import { RouteObject } from 'react-router-dom';
 import { PrivateRoute } from '../components/PrivateRoute';
 import { UserDashboard } from '../components/UserDashboard';
-import { Header } from '../components/Header';
+import { DefaultPageLayout } from '../components/Layouts/DefaultPageLayout';
 
 export const userRoutes: RouteObject[] = [
   {
     path: 'user/settings',
     element: (
       <PrivateRoute>
-        <>
-          <Header />
+        <DefaultPageLayout>
           <UserDashboard />
-        </>
+        </DefaultPageLayout>
       </PrivateRoute>
     ),
   },

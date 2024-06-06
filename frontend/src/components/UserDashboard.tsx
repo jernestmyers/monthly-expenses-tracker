@@ -38,8 +38,10 @@ export function UserDashboard() {
   const [activeStep, setActiveStep] = useState(0);
 
   return (
-    <div>
-      <h2>Configure and edit your household settings</h2>
+    <div className="w-3/4 self-center">
+      <h2 className="text-xl my-3">
+        Configure and edit your household settings
+      </h2>
       <Stepper nonLinear activeStep={activeStep} alternativeLabel>
         {STEPS.map((label, index) => (
           <Step key={label}>
@@ -168,7 +170,7 @@ function ConfigureCategories({ userCategories }: ConfigureCategoriesProps) {
   console.log(categories);
 
   return (
-    <ul>
+    <ul className="mt-3">
       {categories.map((cat) => (
         <li className="my-2" key={cat.id}>
           <div className="flex items-center">

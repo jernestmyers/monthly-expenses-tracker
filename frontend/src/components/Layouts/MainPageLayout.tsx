@@ -7,7 +7,7 @@ type Props = {
 export function MainPageLayout({ children }: Props) {
   return (
     <div className="grid grid-cols-[150px_auto] grid-rows-[auto_1fr] h-screen">
-      <Header className="flex justify-between col-span-2" />
+      <Header additionalClassNames="col-span-2" />
       {children}
     </div>
   );

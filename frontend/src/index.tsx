@@ -8,6 +8,7 @@ import { PrivateRoute } from './components/PrivateRoute';
 import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { userRoutes } from './routes/userRoutes';
 
 // MUI defaults to roboto
 import '@fontsource/roboto/300.css';
@@ -52,6 +53,7 @@ const router = createBrowserRouter([
   //   path: '/register',
   //   element: <Register />,
   // },
+  ...userRoutes,
 ]);
 
 root.render(

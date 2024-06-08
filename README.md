@@ -23,7 +23,6 @@ ultimately this web app is for personal use and its current trajectory is to sui
 
 ## notes/todos
 
-- wire up auth with postman and JWT
 - configure postgres database
 - enable transaction edits
 - implement category tooltip summaries

@@ -5,33 +5,21 @@ import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRig
 import AddIcon from '@mui/icons-material/Add';
 import CircleIcon from '@mui/icons-material/Circle';
 import { TransactionCategory } from '../../data';
-
-const DEFAULT_CATEGORIES: TransactionCategory[] = [
-  { id: 1, label: 'Income' },
-  { id: 2, label: 'Bills' },
-  { id: 3, label: 'Groceries' },
-  { id: 4, label: 'Entertainment' },
-  { id: 5, label: 'Transportation' },
-  { id: 6, label: 'Memberships' },
-  { id: 7, label: 'Services' },
-  { id: 8, label: 'Miscellaneous' },
-];
+import { getUniqueId } from '../../utils/getUniqueId';
 
 type ConfigureUserCategoriesProps = {
-  userCategories?: TransactionCategory[];
+  userCategories: TransactionCategory[];
+  setUserCategories: (userCategories: TransactionCategory[]) => void;
 };
 
 export function ConfigureUserCategories({
   userCategories,
+  setUserCategories,
 }: ConfigureUserCategoriesProps) {
-  const [categories, setCategories] = useState<TransactionCategory[]>(
-    userCategories?.length ? userCategories : DEFAULT_CATEGORIES,
-  );
-
   const onCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCategories(
-      categories.map((cat) => {
-        if (cat.id === Number(e.target.id)) {
+    setUserCategories(
+      userCategories.map((cat) => {
+        if (cat.id === e.target.id) {
           return { ...cat, label: e.target.value };
         } else {
           return cat;
@@ -42,11 +30,11 @@ export function ConfigureUserCategories({
 
   const onSubcategoryChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    subcatId: number,
-    parentId: number,
+    subcatId: string,
+    parentId: string,
   ) => {
-    setCategories(
-      categories.map((cat) => {
+    setUserCategories(
+      userCategories.map((cat) => {
         if (cat.id === parentId) {
           return {
             ...cat,
@@ -65,13 +53,13 @@ export function ConfigureUserCategories({
     );
   };
 
-  const handleCategoryDelete = (id: number) => {
-    setCategories(categories.filter((cat) => cat.id !== id));
+  const handleCategoryDelete = (id: string) => {
+    setUserCategories(userCategories.filter((cat) => cat.id !== id));
   };
 
-  const handleSubcategoryDelete = (parentId: number, subcatId: number) => {
-    setCategories(
-      categories.map((cat) => {
+  const handleSubcategoryDelete = (parentId: string, subcatId: string) => {
+    setUserCategories(
+      userCategories.map((cat) => {
         if (cat.id === parentId) {
           const subcategories = cat.subcategories;
           return subcategories && subcategories.length === 1
@@ -93,15 +81,15 @@ export function ConfigureUserCategories({
     );
   };
 
-  const handleAddSubcategory = (parentId: number) => {
-    setCategories(
-      categories.map((cat) => {
+  const handleAddSubcategory = (parentId: string) => {
+    setUserCategories(
+      userCategories.map((cat) => {
         if (cat.id === parentId) {
           const subcategoryLength = cat.subcategories?.length ?? 0;
           const newSubcategory = {
             parentId,
             label: '',
-            id: subcategoryLength + 1,
+            id: getUniqueId(),
           };
           return {
             ...cat,
@@ -116,9 +104,15 @@ export function ConfigureUserCategories({
     );
   };
 
+  const handleAddCategory = () => {
+    setUserCategories(
+      userCategories.concat([{ id: getUniqueId(), label: '' }]),
+    );
+  };
+
   return (
-    <ul className="mt-3">
-      {categories.map((cat) => (
+    <ul className="w-fit mt-3">
+      {userCategories.map((cat) => (
         <li className="my-2" key={cat.id}>
           <div className="flex items-center">
             <Tooltip
@@ -146,6 +140,7 @@ export function ConfigureUserCategories({
               id={cat.id.toString()}
               onChange={onCategoryChange}
               value={cat.label}
+              placeholder="Enter a category label"
             />
             <Button
               sx={{ minWidth: 'auto' }}
@@ -167,6 +162,7 @@ export function ConfigureUserCategories({
                       onSubcategoryChange(e, subcat.id, subcat.parentId)
                     }
                     value={subcat.label}
+                    placeholder="Enter a subcategory label"
                   />
                   <Button
                     sx={{ minWidth: 'auto' }}
@@ -180,6 +176,14 @@ export function ConfigureUserCategories({
           )}
         </li>
       ))}
+      <Button
+        onClick={handleAddCategory}
+        variant="contained"
+        sx={{ margin: '1em 0', width: '100%' }}
+      >
+        <AddIcon />
+        Add another household category
+      </Button>
     </ul>
   );
 }

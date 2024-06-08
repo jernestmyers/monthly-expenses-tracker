@@ -1,3 +1,5 @@
+import { getUniqueId } from './utils/getUniqueId';
+
 export type Tab = {
   label: string;
   content: React.ReactNode;
@@ -55,7 +57,7 @@ export const TABS: Tab[] = [
 ];
 
 export type TransactionCategory = {
-  id: number;
+  id: string;
   label: string;
   subcategories?: TransactionSubcategory[];
 };
@@ -64,55 +66,69 @@ export type TransactionSubcategory = Omit<
   TransactionCategory,
   'subcategories'
 > & {
-  parentId: number;
+  parentId: string;
 };
 
 const RENTAL_CATEGORIES = [
-  { id: 1, label: 'Utilities' },
-  { id: 2, label: 'Repairs' },
-  { id: 3, label: 'Supplies' },
-  { id: 4, label: 'Cleaning & maintenance' },
-  { id: 5, label: 'Travel' },
-  { id: 6, label: 'Improvements' },
+  { id: getUniqueId(), label: 'Utilities' },
+  { id: getUniqueId(), label: 'Repairs' },
+  { id: getUniqueId(), label: 'Supplies' },
+  { id: getUniqueId(), label: 'Cleaning & maintenance' },
+  { id: getUniqueId(), label: 'Travel' },
+  { id: getUniqueId(), label: 'Improvements' },
 ];
 
 const COST_BASIS_CATEGORIES = [
-  { id: 1, label: 'Improvements' },
-  { id: 2, label: 'Maintenance' },
+  { id: getUniqueId(), label: 'Improvements' },
+  { id: getUniqueId(), label: 'Maintenance' },
 ];
 
+const rentalOneId = getUniqueId();
+const rentalTwoId = getUniqueId();
+const rentalThreeId = getUniqueId();
+const homeId = getUniqueId();
+
 export const TRANSACTION_CATEGORIES: TransactionCategory[] = [
-  { id: 1, label: 'Income' },
-  { id: 2, label: 'Bills' },
-  { id: 3, label: 'Groceries' },
-  { id: 4, label: 'Dining/Going Out' },
-  { id: 5, label: 'Transportation' },
+  { id: getUniqueId(), label: 'Income' },
+  { id: getUniqueId(), label: 'Bills' },
+  { id: getUniqueId(), label: 'Groceries' },
+  { id: getUniqueId(), label: 'Dining/Going Out' },
+  { id: getUniqueId(), label: 'Transportation' },
   {
-    id: 6,
+    id: rentalOneId,
     label: 'Rental 1',
-    subcategories: RENTAL_CATEGORIES.map((cat) => ({ ...cat, parentId: 6 })),
+    subcategories: RENTAL_CATEGORIES.map((cat) => ({
+      ...cat,
+      parentId: rentalOneId,
+    })),
   },
   {
-    id: 7,
+    id: rentalTwoId,
     label: 'Rental 2',
-    subcategories: RENTAL_CATEGORIES.map((cat) => ({ ...cat, parentId: 7 })),
+    subcategories: RENTAL_CATEGORIES.map((cat) => ({
+      ...cat,
+      parentId: rentalTwoId,
+    })),
   },
   {
-    id: 8,
+    id: rentalThreeId,
     label: 'Rental 3',
-    subcategories: RENTAL_CATEGORIES.map((cat) => ({ ...cat, parentId: 8 })),
+    subcategories: RENTAL_CATEGORIES.map((cat) => ({
+      ...cat,
+      parentId: rentalThreeId,
+    })),
   },
   {
-    id: 9,
+    id: homeId,
     label: 'Home',
     subcategories: COST_BASIS_CATEGORIES.map((cat) => ({
       ...cat,
-      parentId: 9,
+      parentId: homeId,
     })),
   },
-  { id: 10, label: 'Miscellaneous' },
-  { id: 11, label: 'JM Personal' },
-  { id: 12, label: 'SM Personal' },
+  { id: getUniqueId(), label: 'Miscellaneous' },
+  { id: getUniqueId(), label: 'JM Personal' },
+  { id: getUniqueId(), label: 'SM Personal' },
 ];
 
 export const TRANSACTION_COLUMNS = [

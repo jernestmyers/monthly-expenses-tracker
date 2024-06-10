@@ -92,6 +92,15 @@ export function UserDashboard() {
               Next
             </Button>
           </div>
+          <div className="mt-4 self-center">
+            <Button
+              onClick={() => setIsEditMode(false)}
+              variant="contained"
+              color="error"
+            >
+              Cancel changes
+            </Button>
+          </div>
         </div>
       )}
       {currentUser && !isEditMode && (

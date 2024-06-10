@@ -21,8 +21,9 @@ export function ReviewAndSubmitUserSettings({
         variant="contained"
         onClick={() => setIsEditMode(false)}
         sx={{ width: 300 }}
+        color="success"
       >
-        Submit
+        Submit changes
       </Button>
     </div>
   );

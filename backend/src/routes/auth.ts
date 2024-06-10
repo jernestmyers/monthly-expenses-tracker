@@ -1,7 +1,6 @@
 import { Request, Response, Router, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import passport, { AuthenticateCallback } from 'passport';
 import pool from '../db';
 import { body, validationResult } from 'express-validator';
 import dotenv from 'dotenv';

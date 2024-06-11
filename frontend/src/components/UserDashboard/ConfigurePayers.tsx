@@ -2,34 +2,66 @@ import React from 'react';
 import { Button, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import { getUniqueId } from '../../utils/getUniqueId';
 
 export type Payer = {
-  isUser: boolean;
-  displayName: string;
+  id: number;
+  name: string;
+};
+
+export type NewPayer = {
+  id?: number;
+  tempId?: string;
+  name?: string;
+  isDeleted?: boolean;
 };
 
 type ConfigurePayersProps = {
   payers: Payer[];
   setPayers: (payers: Payer[]) => void;
+  newOrEditedPayers: NewPayer[];
+  setNewOrEditedPayers: (payers: NewPayer[]) => void;
+  userId: number;
 };
 
-export function ConfigurePayers({ payers, setPayers }: ConfigurePayersProps) {
+export function ConfigurePayers({
+  userId,
+  payers,
+  setPayers,
+  newOrEditedPayers,
+  setNewOrEditedPayers,
+}: ConfigurePayersProps) {
+  // the list of payers will be populated with payers and newOrEditedPayers
+
   const onPayerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPayers(
-      payers.map((payer, index) =>
-        index === Number(e.target.id)
-          ? { ...payer, displayName: e.target.value }
+      payers.map((payer) =>
+        payer.id === Number(e.target.id)
+          ? { ...payer, name: e.target.value }
           : payer,
       ),
     );
   };
 
   const handleAddPayer = () => {
-    setPayers(payers.concat([{ isUser: false, displayName: '' }]));
+    setNewOrEditedPayers(
+      newOrEditedPayers.concat([{ tempId: getUniqueId(), name: '' }]),
+    );
   };
 
-  const handleDeletePayer = (id: number) => {
-    setPayers(payers.filter((payer, index) => Number(id) !== index));
+  const handleDeletePayer = (id: number | string) => {
+    // if we delete a payer, we must determine if the payer already existed in the database (in the payers array, numerical id)
+    // it's possible the payer to be deleted was recently added and never persisted
+    // in the above case, the payer would only exist on newOrEditedPayers array with a tempId attribute
+    if (typeof id === 'number') {
+      setPayers(payers.filter((payer) => payer.id !== id));
+    }
+
+    if (typeof id === 'string') {
+    }
+    //
+    // if (newOrEditedPayers.find(p => p.id))
+    // setNewOrEditedPayers(newOrEditedPayers.)
   };
 
   return (
@@ -37,23 +69,23 @@ export function ConfigurePayers({ payers, setPayers }: ConfigurePayersProps) {
       <h4>
         Enter a short nickname or initials for each payer, including yourself.
       </h4>
-      {payers.map((payer, index) => (
-        <div className="flex items-center my-4" key={index}>
+      {payers.map((payer) => (
+        <div className="flex items-center my-4" key={payer.id}>
           <span className="w-[40px] font-bold">
-            {payer.isUser ? 'You' : ''}
+            {payer.id === userId ? 'You' : ''}
           </span>
           <TextField
             hiddenLabel
             size="small"
-            id={index.toString()}
+            id={payer.id.toString()}
             onChange={onPayerChange}
-            value={payer.displayName}
+            value={payer.name}
             placeholder="Enter a nickname or initials"
           />
           <Button
             sx={{ minWidth: 'auto' }}
-            onClick={() => handleDeletePayer(index)}
-            disabled={payer.isUser}
+            onClick={() => handleDeletePayer(payer.id)}
+            disabled={payer.id === userId}
           >
             <DeleteIcon />
           </Button>

@@ -12,6 +12,7 @@ export type UserData = {
   username: string;
   iat: number;
   exp: number;
+  settings?: unknown;
 };
 
 interface AuthContextType {
@@ -44,10 +45,11 @@ export function AuthProvider({ children }: Props) {
       const user: UserData = jwtDecode(token);
       const currentTime = Date.now() / 1000;
       if (user.exp < currentTime) {
-        localStorage.removeItem('token');
+        localStorage.clear();
         setCurrentUser(null);
       } else {
-        setCurrentUser(user);
+        const settings = localStorage.getItem('userSettings');
+        setCurrentUser({ ...user, settings: JSON.parse(settings!) });
       }
     }
   }, []);
@@ -64,11 +66,12 @@ export function AuthProvider({ children }: Props) {
     if (!response.ok) throw new Error('Account creation failed');
     const { token } = await response.json();
     localStorage.setItem('token', token);
+    // handle user settings creation
     setCurrentUser(jwtDecode(token));
   };
 
   const login = async (username: string, password: string) => {
-    const response = await fetch('auth/login', {
+    const authResponse = await fetch('auth/login', {
       method: 'POST',
       body: JSON.stringify({ username, password }),
       headers: {
@@ -76,14 +79,27 @@ export function AuthProvider({ children }: Props) {
       },
     });
 
-    if (!response.ok) throw new Error('Login failed');
-    const { token } = await response.json();
+    if (!authResponse.ok) throw new Error('Login failed');
+
+    const { token } = await authResponse.json();
+
+    const settingsResponse = await fetch('settings', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const user: UserData = jwtDecode(token);
+    const userSettings = await settingsResponse.json();
+
     localStorage.setItem('token', token);
-    setCurrentUser(jwtDecode(token));
+    localStorage.setItem('userSettings', JSON.stringify(userSettings));
+    setCurrentUser({ ...user, settings: userSettings });
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.clear();
     setCurrentUser(null);
   };
 

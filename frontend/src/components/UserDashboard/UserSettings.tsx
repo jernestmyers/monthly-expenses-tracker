@@ -4,9 +4,10 @@ import { Payer } from './ConfigurePayers';
 type Props = {
   userCategories: TransactionCategory[];
   payers: Payer[];
+  userId: number;
 };
 
-export function UserSettings({ userCategories, payers }: Props) {
+export function UserSettings({ userId, userCategories, payers }: Props) {
   return (
     <div className="flex gap-x-16">
       <ul>
@@ -33,8 +34,8 @@ export function UserSettings({ userCategories, payers }: Props) {
           Your household payers
         </h3>
         {payers.map((payer) => (
-          <li className="text-lg font-medium" key={payer.displayName}>
-            {payer.displayName} {payer.isUser ? '(You)' : null}
+          <li className="text-lg font-medium" key={payer.id}>
+            {payer.name} {payer.id === userId ? '(You)' : null}
           </li>
         ))}
       </ul>

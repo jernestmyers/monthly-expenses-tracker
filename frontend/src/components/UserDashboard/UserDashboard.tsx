@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Step, StepButton, Stepper } from '@mui/material';
 import { TransactionCategory } from '../../data';
 import { ConfigureUserCategories } from './ConfigureUserCategories';
-import { ConfigurePayers } from './ConfigurePayers';
+import { ConfigurePayers, NewPayer } from './ConfigurePayers';
 import { ReviewAndSubmitUserSettings } from './ReviewAndSubmitUserSettings';
 import { useAuth } from '../../context/AuthContext';
 import { getUniqueId } from '../../utils/getUniqueId';
@@ -31,11 +31,16 @@ export function UserDashboard() {
   const { currentUser } = useAuth();
 
   const [userCategories, setUserCategories] =
-    useState<TransactionCategory[]>(DEFAULT_CATEGORIES);
+    // @ts-ignore
+    useState<TransactionCategory[]>(currentUser?.settings.categories);
 
-  const [payers, setPayers] = useState([
-    { isUser: true, displayName: currentUser?.username ?? '' },
-  ]);
+  // const [newOrEditedCategories, setNewOrEditedCategories] = useState(null)
+
+  // @ts-ignore
+  const [payers, setPayers] = useState(currentUser?.settings.payers);
+  const [newOrEditedPayers, setNewOrEditedPayers] = useState<NewPayer[]>([]);
+
+  if (!currentUser) return <>Loading...</>;
 
   return (
     <>
@@ -65,13 +70,20 @@ export function UserDashboard() {
             />
           )}
           {activeStep === 1 && (
-            <ConfigurePayers payers={payers} setPayers={setPayers} />
+            <ConfigurePayers
+              userId={currentUser.id}
+              payers={payers}
+              setPayers={setPayers}
+              newOrEditedPayers={newOrEditedPayers}
+              setNewOrEditedPayers={setNewOrEditedPayers}
+            />
           )}
           {activeStep === 2 && (
             <ReviewAndSubmitUserSettings
               userCategories={userCategories}
               payers={payers}
               setIsEditMode={setIsEditMode}
+              userId={currentUser.id}
             />
           )}
           <div className="flex justify-center gap-x-12">
@@ -105,7 +117,11 @@ export function UserDashboard() {
       )}
       {currentUser && !isEditMode && (
         <div className="mt-4 flex flex-col items-center w-3/4 self-center gap-y-4">
-          <UserSettings userCategories={userCategories} payers={payers} />
+          <UserSettings
+            userId={currentUser.id}
+            userCategories={userCategories}
+            payers={payers}
+          />
           <Button variant="contained" onClick={() => setIsEditMode(true)}>
             Edit settings
           </Button>

@@ -88,7 +88,7 @@ export function SortUploadedDataDialog({
     if (isSubmissionValid(sortedData)) {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`/submit`, {
+        const response = await fetch(`/files/submit`, {
           method: 'POST',
           body: JSON.stringify(sortedData),
           headers: {

@@ -1,66 +1,86 @@
 import { TransactionCategory } from '../../data';
-import { Payer } from './ConfigurePayers';
+import { NewPayer, Payer } from './ConfigurePayers';
 import { Button } from '@mui/material';
 import { UserSettings } from './UserSettings';
+import { useUserContext } from '../../context/UserContext';
 
 type Props = {
   userCategories: TransactionCategory[];
   payers: Payer[];
+  setPayers: (payers: Payer[]) => void;
+  newPayers: NewPayer[];
+  setNewPayers: (newPayers: NewPayer[]) => void;
   setIsEditMode: (isEditMode: boolean) => void;
-  userId: number;
 };
 
 export function ReviewAndSubmitUserSettings({
   userCategories,
   payers,
+  setPayers,
+  newPayers,
+  setNewPayers,
   setIsEditMode,
-  userId,
 }: Props) {
+  const { updatedPayers } = useUserContext();
   const handleSubmit = async () => {
     setIsEditMode(false);
     try {
       const token = localStorage.getItem('token');
-      await fetch('/settings', {
-        method: 'POST',
-        body: JSON.stringify({ userCategories, payers }),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+
+      Promise.all([
+        newPayers.length
+          ? await fetch('/settings/payers', {
+              method: 'POST',
+              body: JSON.stringify({
+                payerNames: newPayers.map((p) => p.name),
+              }),
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+              },
+            })
+          : null,
+        payers.some((p) => Boolean(p.isEdited))
+          ? await fetch('/settings/payers', {
+              method: 'PATCH',
+              body: JSON.stringify({
+                payers: payers.filter((p) => p.isEdited),
+              }),
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+              },
+            })
+          : null,
+        payers.some((p) => Boolean(p.isDeleted))
+          ? await fetch('/settings/payers', {
+              method: 'DELETE',
+              body: JSON.stringify({
+                ids: payers.filter((p) => p.isDeleted).map((p) => p.id),
+              }),
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+              },
+            })
+          : null,
+      ]).finally(async () => {
+        const fetchedPayers = await updatedPayers();
+        setPayers(fetchedPayers);
       });
+
+      setNewPayers([]);
     } catch (err) {
       console.error(err);
     }
-
-    // if (isSubmissionValid(sortedData)) {
-    //   try {
-    //     const token = localStorage.getItem('token');
-    //     const response = await fetch(`/files/submit`, {
-    //       method: 'POST',
-    //       body: JSON.stringify(sortedData),
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //     });
-    //     const test = await response.json();
-    //     console.log({ test });
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // } else {
-    //   alert(
-    //     'Invalid submission. Ensure all transactions have been categorized.',
-    //   );
-    // }
   };
 
   return (
     <div className="flex flex-col items-center mb-4 gap-y-8">
       <UserSettings
-        userId={userId}
         userCategories={userCategories}
         payers={payers}
+        newPayers={newPayers}
       />
       <Button
         variant="contained"

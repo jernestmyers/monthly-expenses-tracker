@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Step, StepButton, Stepper } from '@mui/material';
 import { TransactionCategory } from '../../data';
 import { ConfigureUserCategories } from './ConfigureUserCategories';
-import { ConfigurePayers, NewPayer } from './ConfigurePayers';
+import { ConfigurePayers, Payer, NewPayer } from './ConfigurePayers';
 import { ReviewAndSubmitUserSettings } from './ReviewAndSubmitUserSettings';
-import { useAuth } from '../../context/AuthContext';
 import { getUniqueId } from '../../utils/getUniqueId';
 import { UserSettings } from './UserSettings';
+import { useUserContext } from '../../context/UserContext';
 
 const DEFAULT_CATEGORIES: TransactionCategory[] = [
   { id: getUniqueId(), label: 'Income' },
@@ -28,23 +28,28 @@ const STEPS = [
 export function UserDashboard() {
   const [activeStep, setActiveStep] = useState(0);
   const [isEditMode, setIsEditMode] = useState(false);
-  const { currentUser } = useAuth();
+  const { userPayersSettings, userCategoriesSettings } = useUserContext();
 
-  const [userCategories, setUserCategories] =
-    // @ts-ignore
-    useState<TransactionCategory[]>(currentUser?.settings.categories);
+  const [userCategories, setUserCategories] = useState<TransactionCategory[]>(
+    userCategoriesSettings ?? [],
+  );
 
   // const [newOrEditedCategories, setNewOrEditedCategories] = useState(null)
 
-  // @ts-ignore
-  const [payers, setPayers] = useState(currentUser?.settings.payers);
-  const [newOrEditedPayers, setNewOrEditedPayers] = useState<NewPayer[]>([]);
+  const [payers, setPayers] = useState<Payer[]>(userPayersSettings ?? []);
+  const [newPayers, setNewPayers] = useState<NewPayer[]>([]);
 
-  if (!currentUser) return <>Loading...</>;
+  useEffect(() => {
+    if (userPayersSettings) {
+      setPayers(userPayersSettings);
+    }
+  }, [userPayersSettings]);
+
+  if (!userPayersSettings || !userCategoriesSettings) return <>Loading...</>;
 
   return (
     <>
-      {currentUser && isEditMode && (
+      {payers && isEditMode && (
         <div className="w-3/4 self-center flex flex-col">
           <h2 className="text-xl my-3">
             Configure and edit your household settings
@@ -71,19 +76,20 @@ export function UserDashboard() {
           )}
           {activeStep === 1 && (
             <ConfigurePayers
-              userId={currentUser.id}
               payers={payers}
               setPayers={setPayers}
-              newOrEditedPayers={newOrEditedPayers}
-              setNewOrEditedPayers={setNewOrEditedPayers}
+              newPayers={newPayers}
+              setNewPayers={setNewPayers}
             />
           )}
           {activeStep === 2 && (
             <ReviewAndSubmitUserSettings
               userCategories={userCategories}
               payers={payers}
+              setPayers={setPayers}
+              newPayers={newPayers}
+              setNewPayers={setNewPayers}
               setIsEditMode={setIsEditMode}
-              userId={currentUser.id}
             />
           )}
           <div className="flex justify-center gap-x-12">
@@ -115,12 +121,12 @@ export function UserDashboard() {
           </div>
         </div>
       )}
-      {currentUser && !isEditMode && (
+      {payers && !isEditMode && (
         <div className="mt-4 flex flex-col items-center w-3/4 self-center gap-y-4">
           <UserSettings
-            userId={currentUser.id}
             userCategories={userCategories}
             payers={payers}
+            newPayers={newPayers}
           />
           <Button variant="contained" onClick={() => setIsEditMode(true)}>
             Edit settings

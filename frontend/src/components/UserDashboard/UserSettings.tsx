@@ -1,13 +1,13 @@
 import { TransactionCategory } from '../../data';
-import { Payer } from './ConfigurePayers';
+import { NewPayer, Payer } from './ConfigurePayers';
 
 type Props = {
   userCategories: TransactionCategory[];
   payers: Payer[];
-  userId: number;
+  newPayers: NewPayer[];
 };
 
-export function UserSettings({ userId, userCategories, payers }: Props) {
+export function UserSettings({ userCategories, payers, newPayers }: Props) {
   return (
     <div className="flex gap-x-16">
       <ul>
@@ -33,9 +33,16 @@ export function UserSettings({ userId, userCategories, payers }: Props) {
         <h3 className="text-xl font-bold underline mb-1">
           Your household payers
         </h3>
-        {payers.map((payer) => (
-          <li className="text-lg font-medium" key={payer.id}>
-            {payer.name} {payer.id === userId ? '(You)' : null}
+        {payers
+          .filter((payer) => !payer.isDeleted)
+          .map((payer) => (
+            <li className="text-lg font-medium" key={payer.id}>
+              {payer.name}
+            </li>
+          ))}
+        {newPayers.map((payer) => (
+          <li className="text-lg font-medium" key={payer.tempId}>
+            {payer.name}
           </li>
         ))}
       </ul>

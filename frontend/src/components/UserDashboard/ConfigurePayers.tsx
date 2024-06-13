@@ -7,61 +7,62 @@ import { getUniqueId } from '../../utils/getUniqueId';
 export type Payer = {
   id: number;
   name: string;
+  isEdited?: boolean;
+  isDeleted?: boolean;
 };
 
 export type NewPayer = {
-  id?: number;
-  tempId?: string;
-  name?: string;
-  isDeleted?: boolean;
+  tempId: string;
+  name: string;
 };
 
 type ConfigurePayersProps = {
   payers: Payer[];
   setPayers: (payers: Payer[]) => void;
-  newOrEditedPayers: NewPayer[];
-  setNewOrEditedPayers: (payers: NewPayer[]) => void;
-  userId: number;
+  newPayers: NewPayer[];
+  setNewPayers: (payers: NewPayer[]) => void;
 };
 
 export function ConfigurePayers({
-  userId,
   payers,
   setPayers,
-  newOrEditedPayers,
-  setNewOrEditedPayers,
+  newPayers,
+  setNewPayers,
 }: ConfigurePayersProps) {
-  // the list of payers will be populated with payers and newOrEditedPayers
-
   const onPayerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPayers(
       payers.map((payer) =>
         payer.id === Number(e.target.id)
-          ? { ...payer, name: e.target.value }
+          ? { ...payer, name: e.target.value, isEdited: true }
           : payer,
       ),
     );
   };
 
-  const handleAddPayer = () => {
-    setNewOrEditedPayers(
-      newOrEditedPayers.concat([{ tempId: getUniqueId(), name: '' }]),
+  const handleDeletePayer = (id: number | string) => {
+    setPayers(
+      payers.map((payer) =>
+        payer.id !== id ? payer : { ...payer, isDeleted: true },
+      ),
     );
   };
 
-  const handleDeletePayer = (id: number | string) => {
-    // if we delete a payer, we must determine if the payer already existed in the database (in the payers array, numerical id)
-    // it's possible the payer to be deleted was recently added and never persisted
-    // in the above case, the payer would only exist on newOrEditedPayers array with a tempId attribute
-    if (typeof id === 'number') {
-      setPayers(payers.filter((payer) => payer.id !== id));
-    }
+  const handleAddNewPayer = () => {
+    setNewPayers(newPayers.concat([{ tempId: getUniqueId(), name: '' }]));
+  };
 
-    if (typeof id === 'string') {
-    }
-    //
-    // if (newOrEditedPayers.find(p => p.id))
-    // setNewOrEditedPayers(newOrEditedPayers.)
+  const onNewPayerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewPayers(
+      newPayers.map((newPayer) =>
+        newPayer.tempId === e.target.id
+          ? { ...newPayer, name: e.target.value }
+          : newPayer,
+      ),
+    );
+  };
+
+  const handleDeleteNewPayer = (id: string) => {
+    setNewPayers(newPayers.filter((newPayer) => newPayer.tempId !== id));
   };
 
   return (
@@ -69,32 +70,48 @@ export function ConfigurePayers({
       <h4>
         Enter a short nickname or initials for each payer, including yourself.
       </h4>
-      {payers.map((payer) => (
-        <div className="flex items-center my-4" key={payer.id}>
-          <span className="w-[40px] font-bold">
-            {payer.id === userId ? 'You' : ''}
-          </span>
+      {payers
+        .filter((payer) => !payer.isDeleted)
+        .map((payer) => (
+          <div className="flex items-center my-1" key={payer.id}>
+            <TextField
+              hiddenLabel
+              size="small"
+              id={payer.id.toString()}
+              onChange={onPayerChange}
+              value={payer.name}
+              placeholder="Enter a nickname or initials"
+            />
+            <Button
+              sx={{ minWidth: 'auto' }}
+              onClick={() => handleDeletePayer(payer.id)}
+            >
+              <DeleteIcon />
+            </Button>
+          </div>
+        ))}
+      {newPayers.map((newPayer) => (
+        <div className="flex items-center my-1" key={newPayer.tempId}>
           <TextField
             hiddenLabel
             size="small"
-            id={payer.id.toString()}
-            onChange={onPayerChange}
-            value={payer.name}
+            id={newPayer.tempId}
+            onChange={onNewPayerChange}
+            value={newPayer.name}
             placeholder="Enter a nickname or initials"
           />
           <Button
             sx={{ minWidth: 'auto' }}
-            onClick={() => handleDeletePayer(payer.id)}
-            disabled={payer.id === userId}
+            onClick={() => handleDeleteNewPayer(newPayer.tempId)}
           >
             <DeleteIcon />
           </Button>
         </div>
       ))}
       <Button
-        onClick={handleAddPayer}
+        onClick={handleAddNewPayer}
         variant="contained"
-        sx={{ marginBottom: '2em' }}
+        sx={{ marginBottom: '2em', marginTop: '1em' }}
       >
         <AddIcon />
         Add another household payer

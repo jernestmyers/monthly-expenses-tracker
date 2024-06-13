@@ -12,10 +12,9 @@ export type UserData = {
   username: string;
   iat: number;
   exp: number;
-  settings?: unknown;
 };
 
-interface AuthContextType {
+export interface AuthContextType {
   currentUser: UserData | null;
   register: (username: string, password: string) => Promise<void>;
   login: (username: string, password: string) => Promise<void>;
@@ -48,8 +47,7 @@ export function AuthProvider({ children }: Props) {
         localStorage.clear();
         setCurrentUser(null);
       } else {
-        const settings = localStorage.getItem('userSettings');
-        setCurrentUser({ ...user, settings: JSON.parse(settings!) });
+        setCurrentUser(user);
       }
     }
   }, []);
@@ -66,7 +64,9 @@ export function AuthProvider({ children }: Props) {
     if (!response.ok) throw new Error('Account creation failed');
     const { token } = await response.json();
     localStorage.setItem('token', token);
-    // handle user settings creation
+
+    // TODO: handle default user settings creation
+
     setCurrentUser(jwtDecode(token));
   };
 
@@ -83,19 +83,10 @@ export function AuthProvider({ children }: Props) {
 
     const { token } = await authResponse.json();
 
-    const settingsResponse = await fetch('settings', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
     const user: UserData = jwtDecode(token);
-    const userSettings = await settingsResponse.json();
 
     localStorage.setItem('token', token);
-    localStorage.setItem('userSettings', JSON.stringify(userSettings));
-    setCurrentUser({ ...user, settings: userSettings });
+    setCurrentUser(user);
   };
 
   const logout = () => {

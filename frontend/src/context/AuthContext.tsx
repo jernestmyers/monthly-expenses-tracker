@@ -14,7 +14,7 @@ export type UserData = {
   exp: number;
 };
 
-interface AuthContextType {
+export interface AuthContextType {
   currentUser: UserData | null;
   register: (username: string, password: string) => Promise<void>;
   login: (username: string, password: string) => Promise<void>;
@@ -44,7 +44,7 @@ export function AuthProvider({ children }: Props) {
       const user: UserData = jwtDecode(token);
       const currentTime = Date.now() / 1000;
       if (user.exp < currentTime) {
-        localStorage.removeItem('token');
+        localStorage.clear();
         setCurrentUser(null);
       } else {
         setCurrentUser(user);
@@ -64,11 +64,14 @@ export function AuthProvider({ children }: Props) {
     if (!response.ok) throw new Error('Account creation failed');
     const { token } = await response.json();
     localStorage.setItem('token', token);
+
+    // TODO: handle default user settings creation
+
     setCurrentUser(jwtDecode(token));
   };
 
   const login = async (username: string, password: string) => {
-    const response = await fetch('auth/login', {
+    const authResponse = await fetch('auth/login', {
       method: 'POST',
       body: JSON.stringify({ username, password }),
       headers: {
@@ -76,14 +79,18 @@ export function AuthProvider({ children }: Props) {
       },
     });
 
-    if (!response.ok) throw new Error('Login failed');
-    const { token } = await response.json();
+    if (!authResponse.ok) throw new Error('Login failed');
+
+    const { token } = await authResponse.json();
+
+    const user: UserData = jwtDecode(token);
+
     localStorage.setItem('token', token);
-    setCurrentUser(jwtDecode(token));
+    setCurrentUser(user);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.clear();
     setCurrentUser(null);
   };
 

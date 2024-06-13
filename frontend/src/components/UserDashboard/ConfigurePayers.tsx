@@ -2,34 +2,67 @@ import React from 'react';
 import { Button, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import { getUniqueId } from '../../utils/getUniqueId';
 
 export type Payer = {
-  isUser: boolean;
-  displayName: string;
+  id: number;
+  name: string;
+  isEdited?: boolean;
+  isDeleted?: boolean;
+};
+
+export type NewPayer = {
+  tempId: string;
+  name: string;
 };
 
 type ConfigurePayersProps = {
   payers: Payer[];
   setPayers: (payers: Payer[]) => void;
+  newPayers: NewPayer[];
+  setNewPayers: (payers: NewPayer[]) => void;
 };
 
-export function ConfigurePayers({ payers, setPayers }: ConfigurePayersProps) {
+export function ConfigurePayers({
+  payers,
+  setPayers,
+  newPayers,
+  setNewPayers,
+}: ConfigurePayersProps) {
   const onPayerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPayers(
-      payers.map((payer, index) =>
-        index === Number(e.target.id)
-          ? { ...payer, displayName: e.target.value }
+      payers.map((payer) =>
+        payer.id === Number(e.target.id)
+          ? { ...payer, name: e.target.value, isEdited: true }
           : payer,
       ),
     );
   };
 
-  const handleAddPayer = () => {
-    setPayers(payers.concat([{ isUser: false, displayName: '' }]));
+  const handleDeletePayer = (id: number | string) => {
+    setPayers(
+      payers.map((payer) =>
+        payer.id !== id ? payer : { ...payer, isDeleted: true },
+      ),
+    );
   };
 
-  const handleDeletePayer = (id: number) => {
-    setPayers(payers.filter((payer, index) => Number(id) !== index));
+  const handleAddNewPayer = () => {
+    setNewPayers(newPayers.concat([{ tempId: getUniqueId(), name: '' }]));
+  };
+
+  const onNewPayerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewPayers(
+      newPayers.map((newPayer) =>
+        newPayer.tempId === e.target.id
+          ? { ...newPayer, name: e.target.value }
+          : newPayer,
+      ),
+    );
+  };
+
+  const handleDeleteNewPayer = (id: string) => {
+    setNewPayers(newPayers.filter((newPayer) => newPayer.tempId !== id));
   };
 
   return (
@@ -37,32 +70,48 @@ export function ConfigurePayers({ payers, setPayers }: ConfigurePayersProps) {
       <h4>
         Enter a short nickname or initials for each payer, including yourself.
       </h4>
-      {payers.map((payer, index) => (
-        <div className="flex items-center my-4" key={index}>
-          <span className="w-[40px] font-bold">
-            {payer.isUser ? 'You' : ''}
-          </span>
+      {payers
+        .filter((payer) => !payer.isDeleted)
+        .map((payer) => (
+          <div className="flex items-center my-1" key={payer.id}>
+            <TextField
+              hiddenLabel
+              size="small"
+              id={payer.id.toString()}
+              onChange={onPayerChange}
+              value={payer.name}
+              placeholder="Enter a nickname or initials"
+            />
+            <Button
+              sx={{ minWidth: 'auto' }}
+              onClick={() => handleDeletePayer(payer.id)}
+            >
+              <DeleteIcon />
+            </Button>
+          </div>
+        ))}
+      {newPayers.map((newPayer) => (
+        <div className="flex items-center my-1" key={newPayer.tempId}>
           <TextField
             hiddenLabel
             size="small"
-            id={index.toString()}
-            onChange={onPayerChange}
-            value={payer.displayName}
+            id={newPayer.tempId}
+            onChange={onNewPayerChange}
+            value={newPayer.name}
             placeholder="Enter a nickname or initials"
           />
           <Button
             sx={{ minWidth: 'auto' }}
-            onClick={() => handleDeletePayer(index)}
-            disabled={payer.isUser}
+            onClick={() => handleDeleteNewPayer(newPayer.tempId)}
           >
             <DeleteIcon />
           </Button>
         </div>
       ))}
       <Button
-        onClick={handleAddPayer}
+        onClick={handleAddNewPayer}
         variant="contained"
-        sx={{ marginBottom: '2em' }}
+        sx={{ marginBottom: '2em', marginTop: '1em' }}
       >
         <AddIcon />
         Add another household payer

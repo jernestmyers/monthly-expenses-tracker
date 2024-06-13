@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs';
 import passport from 'passport';
 import {
   Strategy as JwtStrategy,

@@ -4,19 +4,18 @@ import { TransactionCategory } from '../../data';
 import { ConfigureUserCategories } from './ConfigureUserCategories';
 import { ConfigurePayers, Payer, NewPayer } from './ConfigurePayers';
 import { ReviewAndSubmitUserSettings } from './ReviewAndSubmitUserSettings';
-import { getUniqueId } from '../../utils/getUniqueId';
 import { UserSettings } from './UserSettings';
 import { useUserContext } from '../../context/UserContext';
 
 const DEFAULT_CATEGORIES: TransactionCategory[] = [
-  { id: getUniqueId(), label: 'Income' },
-  { id: getUniqueId(), label: 'Bills' },
-  { id: getUniqueId(), label: 'Groceries' },
-  { id: getUniqueId(), label: 'Entertainment' },
-  { id: getUniqueId(), label: 'Transportation' },
-  { id: getUniqueId(), label: 'Memberships' },
-  { id: getUniqueId(), label: 'Services' },
-  { id: getUniqueId(), label: 'Miscellaneous' },
+  { id: 1, name: 'Income' },
+  { id: 2, name: 'Bills' },
+  { id: 3, name: 'Groceries' },
+  { id: 4, name: 'Entertainment' },
+  { id: 5, name: 'Transportation' },
+  { id: 6, name: 'Memberships' },
+  { id: 7, name: 'Services' },
+  { id: 8, name: 'Miscellaneous' },
 ];
 
 const STEPS = [
@@ -34,7 +33,9 @@ export function UserDashboard() {
     userCategoriesSettings ?? [],
   );
 
-  // const [newOrEditedCategories, setNewOrEditedCategories] = useState(null)
+  const [newUserCategories, setNewUserCategories] = useState<
+    TransactionCategory[]
+  >([]);
 
   const [payers, setPayers] = useState<Payer[]>(userPayersSettings ?? []);
   const [newPayers, setNewPayers] = useState<NewPayer[]>([]);
@@ -43,7 +44,10 @@ export function UserDashboard() {
     if (userPayersSettings) {
       setPayers(userPayersSettings);
     }
-  }, [userPayersSettings]);
+    if (userCategoriesSettings) {
+      setUserCategories(userCategoriesSettings);
+    }
+  }, [userPayersSettings, userCategoriesSettings]);
 
   if (!userPayersSettings || !userCategoriesSettings) return <>Loading...</>;
 
@@ -60,10 +64,10 @@ export function UserDashboard() {
             activeStep={activeStep}
             alternativeLabel
           >
-            {STEPS.map((label, index) => (
-              <Step key={label}>
+            {STEPS.map((name, index) => (
+              <Step key={name}>
                 <StepButton onClick={() => setActiveStep(index)}>
-                  {label}
+                  {name}
                 </StepButton>
               </Step>
             ))}
@@ -72,6 +76,8 @@ export function UserDashboard() {
             <ConfigureUserCategories
               userCategories={userCategories}
               setUserCategories={setUserCategories}
+              newUserCategories={newUserCategories}
+              setNewUserCategories={setNewUserCategories}
             />
           )}
           {activeStep === 1 && (

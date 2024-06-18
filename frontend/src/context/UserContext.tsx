@@ -69,6 +69,7 @@ export function UserProvider({ children }: Props) {
   }, []);
 
   const updatedPayers = async () => {
+    if (!token) return;
     const latestPayers = await fetch('/settings/payers', {
       method: 'GET',
       headers: {
@@ -82,6 +83,7 @@ export function UserProvider({ children }: Props) {
   };
 
   const updatedCategories = async () => {
+    if (!token) return;
     const latestCategories = await fetch('/settings/categories', {
       method: 'GET',
       headers: {

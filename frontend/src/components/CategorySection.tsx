@@ -35,7 +35,7 @@ export function CategorySection({
     : TRANSACTION_COLUMNS;
 
   return (
-    <div key={category.label}>
+    <div key={category.name}>
       <details
         open={expandedSections.includes(id)}
         onToggle={(e: React.SyntheticEvent<HTMLDetailsElement, Event>) => {
@@ -48,14 +48,14 @@ export function CategorySection({
         }}
       >
         <summary>
-          <h2 className="inline-block">{category.label}</h2>
+          <h2 className="inline-block">{category.name}</h2>
           <Tooltip
             title={
               <div>
-                <h3>{category.label} Transactions at a glance</h3>
+                <h3>{category.name} Transactions at a glance</h3>
                 <ul>
                   <li>
-                    {TABS[activeTab].label}'s total: <span>$1000</span>
+                    {TABS[activeTab].name}'s total: <span>$1000</span>
                   </li>
                   <li>
                     YTD total: <span>$5000</span>

@@ -11,7 +11,7 @@ export function NoData({ month, year }: Props) {
       <h3 className="text-xl mb-4">No data</h3>
       <p>
         Upload a CSV with data for{' '}
-        {month ? TABS[Number(month) - 1].label : month} {year} or navigate to a
+        {month ? TABS[Number(month) - 1].name : month} {year} or navigate to a
         different month/year.
       </p>
     </div>

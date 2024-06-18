@@ -17,12 +17,12 @@ export function UserSettings({ userCategories, payers, newPayers }: Props) {
         {userCategories.map((cat) => (
           <>
             <li className="text-lg font-medium" key={cat.id}>
-              {cat.label}
+              {cat.name}
             </li>
             {cat.subcategories && (
               <ul className="ml-4">
                 {cat.subcategories.map((subcat) => (
-                  <li>{subcat.label}</li>
+                  <li>{subcat.name}</li>
                 ))}
               </ul>
             )}

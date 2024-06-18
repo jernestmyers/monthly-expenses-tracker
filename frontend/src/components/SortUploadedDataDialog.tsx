@@ -208,7 +208,7 @@ export function SortUploadedDataDialog({
                         value={getValue(d, sortedData, 'category')}
                       >
                         {TRANSACTION_CATEGORIES.map((cat) => (
-                          <MenuItem value={cat.label}>{cat.label}</MenuItem>
+                          <MenuItem value={cat.name}>{cat.name}</MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -277,7 +277,7 @@ function SubcategoriesContent({
   const transaction = findTransaction(tableData, sortedData);
   if (transaction && 'category' in transaction) {
     const category = TRANSACTION_CATEGORIES.find(
-      (cat) => cat.label === transaction.category,
+      (cat) => cat.name === transaction.category,
     );
     if (category?.subcategories) {
       return (
@@ -292,7 +292,7 @@ function SubcategoriesContent({
             value={getValue(tableData, sortedData, 'subCategory')}
           >
             {category.subcategories.map((cat) => (
-              <MenuItem value={cat.label}>{cat.label}</MenuItem>
+              <MenuItem value={cat.name}>{cat.name}</MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -316,7 +316,7 @@ function isSubmissionValid(sortedData: SortedData[]) {
   return sortedData.every((d) => {
     if ('category' in d) {
       const categoryObject = TRANSACTION_CATEGORIES.find(
-        (cat) => cat.label === d.category,
+        (cat) => cat.name === d.category,
       );
       if (categoryObject && 'subCategories' in categoryObject) {
         return 'subCategory' in d;

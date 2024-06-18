@@ -70,7 +70,7 @@ function App() {
             scrollButtons="auto"
           >
             {TABS.map((tab, i) => (
-              <Tab label={tab.label} key={tab.label} {...a11yProps(i)} />
+              <Tab label={tab.name} key={tab.name} {...a11yProps(i)} />
             ))}
           </Tabs>
           {tabData ? (
@@ -94,7 +94,7 @@ function App() {
                 <div>
                   {TRANSACTION_CATEGORIES.map((cat, index) => (
                     <CategorySection
-                      key={cat.label}
+                      key={cat.name}
                       activeTab={Number(month) - 1}
                       id={index}
                       category={cat}

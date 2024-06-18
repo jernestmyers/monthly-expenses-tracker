@@ -1,102 +1,104 @@
-import { getUniqueId } from './utils/getUniqueId';
+import { getUniqueNumericalId } from './utils/getUniqueId';
 
 export type Tab = {
-  label: string;
+  name: string;
   content: React.ReactNode;
 };
 
 export const TABS: Tab[] = [
   {
-    label: 'Jan',
+    name: 'Jan',
     content: <>Stuff</>,
   },
   {
-    label: 'Feb',
+    name: 'Feb',
     content: <>Stuff</>,
   },
   {
-    label: 'Mar',
+    name: 'Mar',
     content: <>Stuff</>,
   },
   {
-    label: 'Apr',
+    name: 'Apr',
     content: <>Stuff</>,
   },
   {
-    label: 'May',
+    name: 'May',
     content: <>Stuff</>,
   },
   {
-    label: 'Jun',
+    name: 'Jun',
     content: <>Stuff</>,
   },
   {
-    label: 'Jul',
+    name: 'Jul',
     content: <>Stuff</>,
   },
   {
-    label: 'Aug',
+    name: 'Aug',
     content: <>Stuff</>,
   },
   {
-    label: 'Sep',
+    name: 'Sep',
     content: <>Stuff</>,
   },
   {
-    label: 'Oct',
+    name: 'Oct',
     content: <>Stuff</>,
   },
   {
-    label: 'Nov',
+    name: 'Nov',
     content: <>Stuff</>,
   },
   {
-    label: 'Dec',
+    name: 'Dec',
     content: <>Stuff</>,
   },
 ];
 
 export type TransactionCategory = {
-  id: string;
-  label: string;
+  id: number | string;
+  name: string;
   subcategories?: TransactionSubcategory[];
+  isEdited?: boolean;
+  isDeleted?: boolean;
 };
 
 export type TransactionSubcategory = Omit<
   TransactionCategory,
   'subcategories'
 > & {
-  parentId: string;
+  parentId: number | string;
 };
 
 const RENTAL_CATEGORIES = [
-  { id: getUniqueId(), label: 'Utilities' },
-  { id: getUniqueId(), label: 'Repairs' },
-  { id: getUniqueId(), label: 'Supplies' },
-  { id: getUniqueId(), label: 'Cleaning & maintenance' },
-  { id: getUniqueId(), label: 'Travel' },
-  { id: getUniqueId(), label: 'Improvements' },
+  { id: getUniqueNumericalId(), name: 'Utilities' },
+  { id: getUniqueNumericalId(), name: 'Repairs' },
+  { id: getUniqueNumericalId(), name: 'Supplies' },
+  { id: getUniqueNumericalId(), name: 'Cleaning & maintenance' },
+  { id: getUniqueNumericalId(), name: 'Travel' },
+  { id: getUniqueNumericalId(), name: 'Improvements' },
 ];
 
 const COST_BASIS_CATEGORIES = [
-  { id: getUniqueId(), label: 'Improvements' },
-  { id: getUniqueId(), label: 'Maintenance' },
+  { id: getUniqueNumericalId(), name: 'Improvements' },
+  { id: getUniqueNumericalId(), name: 'Maintenance' },
 ];
 
-const rentalOneId = getUniqueId();
-const rentalTwoId = getUniqueId();
-const rentalThreeId = getUniqueId();
-const homeId = getUniqueId();
+const rentalOneId = getUniqueNumericalId();
+const rentalTwoId = getUniqueNumericalId();
+const rentalThreeId = getUniqueNumericalId();
+const homeId = getUniqueNumericalId();
 
 export const TRANSACTION_CATEGORIES: TransactionCategory[] = [
-  { id: getUniqueId(), label: 'Income' },
-  { id: getUniqueId(), label: 'Bills' },
-  { id: getUniqueId(), label: 'Groceries' },
-  { id: getUniqueId(), label: 'Dining/Going Out' },
-  { id: getUniqueId(), label: 'Transportation' },
+  { id: getUniqueNumericalId(), name: 'Income' },
+  { id: getUniqueNumericalId(), name: 'Bills' },
+  { id: getUniqueNumericalId(), name: 'Groceries' },
+  { id: getUniqueNumericalId(), name: 'Dining/Going Out' },
+  { id: getUniqueNumericalId(), name: 'Transportation' },
   {
     id: rentalOneId,
-    label: 'Rental 1',
+    name: 'Rental 1',
     subcategories: RENTAL_CATEGORIES.map((cat) => ({
       ...cat,
       parentId: rentalOneId,
@@ -104,7 +106,7 @@ export const TRANSACTION_CATEGORIES: TransactionCategory[] = [
   },
   {
     id: rentalTwoId,
-    label: 'Rental 2',
+    name: 'Rental 2',
     subcategories: RENTAL_CATEGORIES.map((cat) => ({
       ...cat,
       parentId: rentalTwoId,
@@ -112,7 +114,7 @@ export const TRANSACTION_CATEGORIES: TransactionCategory[] = [
   },
   {
     id: rentalThreeId,
-    label: 'Rental 3',
+    name: 'Rental 3',
     subcategories: RENTAL_CATEGORIES.map((cat) => ({
       ...cat,
       parentId: rentalThreeId,
@@ -120,15 +122,15 @@ export const TRANSACTION_CATEGORIES: TransactionCategory[] = [
   },
   {
     id: homeId,
-    label: 'Home',
+    name: 'Home',
     subcategories: COST_BASIS_CATEGORIES.map((cat) => ({
       ...cat,
       parentId: homeId,
     })),
   },
-  { id: getUniqueId(), label: 'Miscellaneous' },
-  { id: getUniqueId(), label: 'JM Personal' },
-  { id: getUniqueId(), label: 'SM Personal' },
+  { id: getUniqueNumericalId(), name: 'Miscellaneous' },
+  { id: getUniqueNumericalId(), name: 'JM Personal' },
+  { id: getUniqueNumericalId(), name: 'SM Personal' },
 ];
 
 export const TRANSACTION_COLUMNS = [

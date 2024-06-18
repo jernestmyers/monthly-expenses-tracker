@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-import { getUniqueId } from '../../utils/getUniqueId';
+import { getUniqueStringId } from '../../utils/getUniqueId';
 
 export type Payer = {
   id: number;
@@ -48,7 +48,7 @@ export function ConfigurePayers({
   };
 
   const handleAddNewPayer = () => {
-    setNewPayers(newPayers.concat([{ tempId: getUniqueId(), name: '' }]));
+    setNewPayers(newPayers.concat([{ tempId: getUniqueStringId(), name: '' }]));
   };
 
   const onNewPayerChange = (e: React.ChangeEvent<HTMLInputElement>) => {

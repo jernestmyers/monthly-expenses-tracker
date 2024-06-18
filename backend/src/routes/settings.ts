@@ -39,7 +39,11 @@ router.get(
             ...parentCategory,
             subcategories: userSubcategories.rows
               .filter((subcat) => subcat['parent_id'] === parentCategory.id)
-              .map((cat) => ({ id: cat.id, name: cat.name })),
+              .map((cat) => ({
+                id: cat.id,
+                name: cat.name,
+                parentId: parentCategory.id,
+              })),
           };
         } else {
           return parentCategory;

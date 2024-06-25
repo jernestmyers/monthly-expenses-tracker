@@ -87,9 +87,8 @@ router.post(
   '/categories',
   authenticateJWT,
   async (req: Request, res: Response) => {
-    const { userCategories } = req.body;
-
-    if (!Array.isArray(userCategories) || !userCategories.length) {
+    const { newCategories } = req.body;
+    if (!Array.isArray(newCategories) || !newCategories.length) {
       return res.status(400).send('Invalid request');
     }
 
@@ -98,33 +97,28 @@ router.post(
       const { id } = user;
       const client = await pool.connect();
 
-      // handle category updates
-      userCategories.forEach(async (cat) => {
-        // create categories
+      newCategories.forEach(async (cat) => {
+        // create new categories
         const newOrUpdatedCategory = await client.query(
           `
                     INSERT INTO categories (user_id, name, parent_id)
                     VALUES ($1, $2, $3)
-                    ON CONFLICT (user_id, name, parent_id)
-                    DO UPDATE SET name = EXCLUDED.name
-                    RETURNING *
+                    RETURNING id
                 `,
-          [id, cat.label, null],
+          [id, cat.name, cat.parentId ?? null],
         );
 
         if ('subcategories' in cat && cat.subcategories.length) {
           const { subcategories } = cat;
-          //@ts-ignore
-          subcategories.forEach(async (subcat) => {
+          // @ts-ignore
+          subcategories?.forEach(async (subcat) => {
             await client.query(
               `
                         INSERT INTO categories (user_id, name, parent_id)
                         VALUES ($1, $2, $3)
-                        ON CONFLICT (user_id, name, parent_id)
-                        DO UPDATE SET name = EXCLUDED.name
-                        RETURNING *`,
+                      `,
               //@ts-ignore
-              [id, subcat.label, newOrUpdatedCategory.rows[0].id],
+              [id, subcat.name, newOrUpdatedCategory.rows[0].id],
             );
           });
         }
@@ -161,7 +155,62 @@ router.patch(
     } catch (err) {}
   },
 );
-router.patch('/categories');
+
+router.patch(
+  '/categories',
+  authenticateJWT,
+  async (req: Request, res: Response) => {
+    const { patchedCategories } = req.body;
+    if (!Array.isArray(patchedCategories) || !patchedCategories.length) {
+      return res.status(400).send('Invalid request');
+    }
+
+    try {
+      const client = await pool.connect();
+
+      Promise.all(
+        patchedCategories.map(
+          async (patchedCategory) =>
+            await client.query(
+              'UPDATE categories SET name = $1 WHERE id = $2 RETURNING id, name',
+              [patchedCategory.name, patchedCategory.id],
+            ),
+        ),
+      )
+        .then((data) =>
+          res.status(200).json({ patchedCategories: data.map((d) => d.rows) }),
+        )
+        .catch((err) => console.log(err));
+    } catch (err) {
+      console.log(err);
+    }
+  },
+);
+
+router.delete(
+  '/categories',
+  authenticateJWT,
+  async (req: Request, res: Response) => {
+    const { ids } = req.body;
+    if (!Array.isArray(ids) || !ids.length) {
+      return res.status(400).send('Invalid request');
+    }
+    const client = await pool.connect();
+    Promise.all(
+      ids.map(
+        async (id) =>
+          await client.query(
+            'DELETE FROM categories WHERE id = $1 RETURNING id',
+            [id],
+          ),
+      ),
+    )
+      .then((data) =>
+        res.status(200).json({ deletedCategoryIds: data.map((d) => d.rows) }),
+      )
+      .catch((err) => console.log(err));
+  },
+);
 
 router.delete(
   '/payers',
@@ -186,6 +235,5 @@ router.delete(
       .catch((err) => console.log(err));
   },
 );
-router.delete('categories');
 
 export default router;

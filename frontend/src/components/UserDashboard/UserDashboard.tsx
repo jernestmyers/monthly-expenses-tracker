@@ -91,6 +91,9 @@ export function UserDashboard() {
           {activeStep === 2 && (
             <ReviewAndSubmitUserSettings
               userCategories={userCategories}
+              setUserCategories={setUserCategories}
+              newUserCategories={newUserCategories}
+              setNewUserCategories={setNewUserCategories}
               payers={payers}
               setPayers={setPayers}
               newPayers={newPayers}
@@ -131,6 +134,7 @@ export function UserDashboard() {
         <div className="mt-4 flex flex-col items-center w-3/4 self-center gap-y-4">
           <UserSettings
             userCategories={userCategories}
+            newUserCategories={newUserCategories}
             payers={payers}
             newPayers={newPayers}
           />

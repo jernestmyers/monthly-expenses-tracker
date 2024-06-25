@@ -60,7 +60,6 @@ const categoryOnChangeSetterCallback =
 const subcategoryOnChangeSetterCallback =
   (parentId: string | number, subcatId: string | number, value: string) =>
   (cat: TransactionCategory) => {
-    // console.log({parentId, subcatId})
     if (cat.id === parentId) {
       return {
         ...cat,
@@ -113,7 +112,6 @@ export function ConfigureUserCategories({
     subcatId: number | string,
     parentId: number | string,
   ) => {
-    console.log({ subcatId, parentId });
     if (typeof parentId === 'number') {
       setUserCategories(
         userCategories.map(

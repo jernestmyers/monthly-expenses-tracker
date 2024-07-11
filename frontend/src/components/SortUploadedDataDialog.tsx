@@ -18,14 +18,10 @@ import {
   TableRow,
   TableCell,
 } from '@mui/material';
-import {
-  TRANSACTION_COLUMNS,
-  PAYEES,
-  TRANSACTION_CATEGORIES,
-  Row,
-} from '../data';
+import { TRANSACTION_COLUMNS, Row, TransactionCategory } from '../data';
 import { ResponseObject } from './UploadCsvForm';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useUserContext } from '../context/UserContext';
 
 type Props = {
   open: boolean;
@@ -37,7 +33,7 @@ type Props = {
 
 interface SortedData extends Row {
   category?: string;
-  subCategory?: string;
+  subcategory?: string;
 }
 
 const SORT_DATA_COLUMNS = TRANSACTION_COLUMNS.map((col) =>
@@ -54,10 +50,12 @@ export function SortUploadedDataDialog({
   const [sortedData, setSortedData] = useState<SortedData[]>([]);
   const [statementOwner, setStatementOwner] = useState<string | null>(null);
 
+  const { userPayersSettings, userCategoriesSettings } = useUserContext();
+
   const handleCategorySelection = (
     category: string,
     data: ResponseObject,
-    key: 'category' | 'subCategory',
+    key: 'category' | 'subcategory',
   ) => {
     const existingTransaction = findTransaction(data, sortedData);
     if (existingTransaction) {
@@ -85,7 +83,8 @@ export function SortUploadedDataDialog({
   };
 
   const handleSubmit = async () => {
-    if (isSubmissionValid(sortedData)) {
+    if (!userCategoriesSettings) return;
+    if (isSubmissionValid(sortedData, userCategoriesSettings)) {
       try {
         const token = localStorage.getItem('token');
         const response = await fetch(`/files/submit`, {
@@ -121,7 +120,7 @@ export function SortUploadedDataDialog({
         Categorize and Edit Uploaded Transactions
       </DialogTitle>
       <DialogContent dividers sx={{ paddingTop: 0 }}>
-        {!statementOwner && (
+        {!statementOwner && userPayersSettings && (
           <div>
             <p className="m-4 mb-2">Whose statment was uploaded?</p>
             <div className="ml-10">
@@ -130,114 +129,122 @@ export function SortUploadedDataDialog({
                   value={statementOwner}
                   onChange={handleStatementOwnerChange}
                 >
-                  {PAYEES.map((p) => (
-                    <FormControlLabel value={p} control={<Radio />} label={p} />
+                  {userPayersSettings.map((p) => (
+                    <FormControlLabel
+                      value={p.id}
+                      control={<Radio />}
+                      label={p.name}
+                    />
                   ))}
                 </RadioGroup>
               </FormControl>
             </div>
           </div>
         )}
-        {statementOwner && sortedData && (
-          <Table size="small" stickyHeader>
-            <TableHead>
-              <TableRow>
-                {SORT_DATA_COLUMNS.map((col) => (
-                  <TableCell>{col}</TableCell>
-                ))}
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {sortedData.map((d) => (
+        {statementOwner &&
+          sortedData &&
+          userCategoriesSettings &&
+          userPayersSettings && (
+            <Table size="small" stickyHeader>
+              <TableHead>
                 <TableRow>
-                  <TableCell>{d.date}</TableCell>
-                  <TableCell>{d.description}</TableCell>
-                  <TableCell>{d.memo}</TableCell>
-                  <TableCell>{d.amount}</TableCell>
-                  <TableCell>
-                    {d.amount > 0 ? (
-                      'N/A'
-                    ) : (
-                      <FormControl>
-                        <RadioGroup value={statementOwner}>
-                          {PAYEES.map((p) => (
-                            <FormControlLabel
-                              value={p}
-                              control={
-                                <Radio
-                                  size="small"
-                                  sx={{
-                                    '& .MuiSvgIcon-root': {
-                                      fontSize: 16,
-                                    },
-                                    padding: '3px',
-                                  }}
-                                  disabled={statementOwner != null}
-                                />
-                              }
-                              label={p}
-                              sx={{
-                                '.MuiFormControlLabel-label': {
-                                  fontSize: '14px',
-                                },
-                              }}
-                            />
+                  {SORT_DATA_COLUMNS.map((col) => (
+                    <TableCell>{col}</TableCell>
+                  ))}
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {sortedData.map((d) => (
+                  <TableRow>
+                    <TableCell>{d.date}</TableCell>
+                    <TableCell>{d.description}</TableCell>
+                    <TableCell>{d.memo}</TableCell>
+                    <TableCell>{d.amount}</TableCell>
+                    <TableCell>
+                      {d.amount > 0 ? (
+                        'N/A'
+                      ) : (
+                        <FormControl>
+                          <RadioGroup value={statementOwner}>
+                            {userPayersSettings.map((p) => (
+                              <FormControlLabel
+                                value={p.id}
+                                control={
+                                  <Radio
+                                    size="small"
+                                    sx={{
+                                      '& .MuiSvgIcon-root': {
+                                        fontSize: 16,
+                                      },
+                                      padding: '3px',
+                                    }}
+                                    disabled={statementOwner != null}
+                                  />
+                                }
+                                label={p.name}
+                                sx={{
+                                  '.MuiFormControlLabel-label': {
+                                    fontSize: '14px',
+                                  },
+                                }}
+                              />
+                            ))}
+                          </RadioGroup>
+                        </FormControl>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <FormControl
+                        variant="standard"
+                        sx={{ minWidth: 120 }}
+                        size="small"
+                      >
+                        <InputLabel id="category-selector">Category</InputLabel>
+                        <Select
+                          labelId="category-selector"
+                          id="category-select"
+                          onChange={(e) =>
+                            handleCategorySelection(
+                              e.target.value as string,
+                              d,
+                              'category',
+                            )
+                          }
+                          value={getValue(d, sortedData, 'category')}
+                        >
+                          {userCategoriesSettings.map((cat) => (
+                            <MenuItem value={cat.id}>{cat.name}</MenuItem>
                           ))}
-                        </RadioGroup>
+                        </Select>
                       </FormControl>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <FormControl
-                      variant="standard"
-                      sx={{ minWidth: 120 }}
-                      size="small"
-                    >
-                      <InputLabel id="category-selector">Category</InputLabel>
-                      <Select
-                        labelId="category-selector"
-                        id="category-select"
-                        onChange={(e) =>
-                          handleCategorySelection(
-                            e.target.value as string,
-                            d,
-                            'category',
+                    </TableCell>
+                    <TableCell>
+                      {showSubcategoryContent(d, sortedData) && (
+                        <SubcategoriesContent
+                          tableData={d}
+                          sortedData={sortedData}
+                          onChange={handleCategorySelection}
+                          userCategoriesSettings={userCategoriesSettings}
+                        />
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        onClick={() =>
+                          setSortedData(
+                            sortedData.filter((data) => data.id !== d.id),
                           )
                         }
-                        value={getValue(d, sortedData, 'category')}
                       >
-                        {TRANSACTION_CATEGORIES.map((cat) => (
-                          <MenuItem value={cat.name}>{cat.name}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </TableCell>
-                  <TableCell>
-                    {showSubcategoryContent(d, sortedData) && (
-                      <SubcategoriesContent
-                        tableData={d}
-                        sortedData={sortedData}
-                        onChange={handleCategorySelection}
-                      />
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      onClick={() =>
-                        setSortedData(
-                          sortedData.filter((data) => data.id !== d.id),
-                        )
-                      }
-                    >
-                      <DeleteIcon sx={{ color: '#c1121f' }} />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
+                        <DeleteIcon sx={{ color: '#c1121f' }} />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
       </DialogContent>
 
       <DialogActions>
@@ -265,19 +272,22 @@ function SubcategoriesContent({
   tableData,
   sortedData,
   onChange,
+  userCategoriesSettings,
 }: {
   tableData: ResponseObject;
   sortedData: SortedData[];
   onChange: (
     selected: string,
     data: ResponseObject,
-    key: 'category' | 'subCategory',
+    key: 'category' | 'subcategory',
   ) => void;
+  userCategoriesSettings: TransactionCategory[];
 }) {
   const transaction = findTransaction(tableData, sortedData);
+  console.log({ transaction });
   if (transaction && 'category' in transaction) {
-    const category = TRANSACTION_CATEGORIES.find(
-      (cat) => cat.name === transaction.category,
+    const category = userCategoriesSettings.find(
+      (cat) => cat.id === transaction.category,
     );
     if (category?.subcategories) {
       return (
@@ -287,12 +297,12 @@ function SubcategoriesContent({
             labelId="subcategory-selector"
             id="subcategory-select"
             onChange={(e) =>
-              onChange(e.target.value as string, tableData, 'subCategory')
+              onChange(e.target.value as string, tableData, 'subcategory')
             }
-            value={getValue(tableData, sortedData, 'subCategory')}
+            value={getValue(tableData, sortedData, 'subcategory')}
           >
             {category.subcategories.map((cat) => (
-              <MenuItem value={cat.name}>{cat.name}</MenuItem>
+              <MenuItem value={cat.id}>{cat.name}</MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -312,14 +322,17 @@ function showSubcategoryContent(
   return transaction && 'category' in transaction;
 }
 
-function isSubmissionValid(sortedData: SortedData[]) {
+function isSubmissionValid(
+  sortedData: SortedData[],
+  userCategoriesSettings: TransactionCategory[],
+) {
   return sortedData.every((d) => {
     if ('category' in d) {
-      const categoryObject = TRANSACTION_CATEGORIES.find(
+      const categoryObject = userCategoriesSettings.find(
         (cat) => cat.name === d.category,
       );
-      if (categoryObject && 'subCategories' in categoryObject) {
-        return 'subCategory' in d;
+      if (categoryObject && 'subcategories' in categoryObject) {
+        return 'subcategories' in d;
       } else {
         return true;
       }

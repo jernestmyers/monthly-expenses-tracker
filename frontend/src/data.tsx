@@ -153,5 +153,3 @@ export type Row = {
 export const data: Row[] = [];
 
 export const FISCAL_YEARS = [2023, 2024];
-
-export const PAYEES = ['SM', 'JM'];

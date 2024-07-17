@@ -85,18 +85,23 @@ export function SortUploadedDataDialog({
   const handleSubmit = async () => {
     if (!userCategoriesSettings) return;
     if (isSubmissionValid(sortedData, userCategoriesSettings)) {
+      const sortedDataWithoutClientId = sortedData.map((d) => {
+        const { id, ...remainingData } = d;
+        return remainingData;
+      });
       try {
         const token = localStorage.getItem('token');
         const response = await fetch(`/files/submit`, {
           method: 'POST',
-          body: JSON.stringify(sortedData),
+          body: JSON.stringify(sortedDataWithoutClientId),
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
         });
-        const test = await response.json();
-        console.log({ test });
+        setUploadedData(null);
+        const tabData = await response.json();
+        console.log(tabData);
       } catch (error) {
         console.error(error);
       }
@@ -284,7 +289,6 @@ function SubcategoriesContent({
   userCategoriesSettings: TransactionCategory[];
 }) {
   const transaction = findTransaction(tableData, sortedData);
-  console.log({ transaction });
   if (transaction && 'category' in transaction) {
     const category = userCategoriesSettings.find(
       (cat) => cat.id === transaction.category,

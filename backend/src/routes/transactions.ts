@@ -18,7 +18,7 @@ router.get('/', authenticateJWT, async (req, res) => {
     const daysInMonth = new Date(Number(year), Number(month), 0).getDate();
     const currentTabDatePrefix = year + '-' + month;
     const currentTabTransactions = await client.query(`
-      SELECT t.*, c.id AS category_id, c.name AS category_name, c2.name AS parent_category_name, p.name AS payer_name
+      SELECT t.*, c.id AS category_id, c.name AS category_name, c2.id AS parent_category_id, p.name AS payer_name
       FROM transactions t
       LEFT JOIN transaction_categories tc ON t.id = tc.transaction_id
       LEFT JOIN categories c ON tc.category_id = c.id

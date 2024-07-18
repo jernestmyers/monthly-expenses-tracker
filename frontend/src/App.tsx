@@ -129,14 +129,22 @@ function App() {
                     // @ts-ignore
                     const sectionData: SortedData[] = tabData
                       // @ts-ignore
-                      .filter((d) => cat.id === d['category_id'])
+                      .filter((d) => {
+                        if (d['parent_category_id']) {
+                          return cat.id === d['parent_category_id'];
+                        } else {
+                          return cat.id === d['category_id'];
+                        }
+                      })
                       // @ts-ignore
                       .map((d) => ({
                         id: d.id,
                         date: d.date,
                         description: d.description,
                         memo: d.memo,
-                        subcategory: d['parent_category_name'],
+                        subcategory: d['parent_category_id']
+                          ? d['category_name']
+                          : null,
                         amount: d.amount,
                         paidBy: d['payer_name'],
                       }));

@@ -99,19 +99,24 @@ router.post('/submit', authenticateJWT, async (req, res) => {
         INSERT INTO transaction_categories (transaction_id, category_id)
         VALUES ($1, $2)
       `,
-        [newTransaction.rows[0].id, Number(t.category)],
+        [newTransaction.rows[0].id, Number(t.subcategory ?? t.category)],
       );
     });
 
+    const daysInMonth = new Date(
+      Number(tabUrlParts[3]),
+      Number(tabUrlParts[4]),
+      0,
+    ).getDate();
     const currentTabDatePrefix = tabUrlParts[3] + '-' + tabUrlParts[4];
     const currentTabTransactions = await client.query(`
-      SELECT t.*, c.name AS category_name, c2.name AS parent_category_name, p.name AS payer_name
+      SELECT t.*, c.id AS category_id, c.name AS category_name, c2.id AS parent_category_id, p.name AS payer_name
       FROM transactions t
       LEFT JOIN transaction_categories tc ON t.id = tc.transaction_id
       LEFT JOIN categories c ON tc.category_id = c.id
       LEFT JOIN categories c2 ON c.parent_id = c2.id
       LEFT JOIN payers p ON t.payer_id = p.id
-      WHERE t.user_id = ${id} AND t.date >= '${currentTabDatePrefix + '-1'}' AND t.date <= '${currentTabDatePrefix + '-31'}';    
+      WHERE t.user_id = ${id} AND t.date >= '${currentTabDatePrefix + '-1'}' AND t.date <= '${currentTabDatePrefix + '-' + daysInMonth}';    
     `);
     client.release();
     res.status(200).json(currentTabTransactions.rows);

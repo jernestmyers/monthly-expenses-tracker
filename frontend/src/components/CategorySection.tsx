@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Table,
   TableHead,
@@ -70,35 +70,39 @@ export function CategorySection({
             <CalculateIcon />
           </Tooltip>
         </summary>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {finalCategoryColumns.map((col) => (
-                <TableCell key={col}>{col}</TableCell>
-              ))}
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sectionData.map((d) => (
-              <TableRow key={d.id}>
-                <TableCell>{d.date}</TableCell>
-                <TableCell>{d.description}</TableCell>
-                <TableCell>{d.memo}</TableCell>
-                {d.subcategory && <TableCell>{d.subcategory}</TableCell>}
-                <TableCell>${d.amount}</TableCell>
-                <TableCell>{d.paidBy ?? 'N/A'}</TableCell>
-                <TableCell>
-                  <div className="flex gap-3">
-                    <EditIcon />
-                    <MoveDownIcon />
-                    <DeleteIcon />
-                  </div>
-                </TableCell>
+        {sectionData.length ? (
+          <Table>
+            <TableHead>
+              <TableRow>
+                {finalCategoryColumns.map((col) => (
+                  <TableCell key={col}>{col}</TableCell>
+                ))}
+                <TableCell>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {sectionData.map((d) => (
+                <TableRow key={d.id}>
+                  <TableCell>{d.date}</TableCell>
+                  <TableCell>{d.description}</TableCell>
+                  <TableCell>{d.memo}</TableCell>
+                  {d.subcategory && <TableCell>{d.subcategory}</TableCell>}
+                  <TableCell>${d.amount}</TableCell>
+                  <TableCell>{d.paidBy ?? 'N/A'}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-3">
+                      <EditIcon />
+                      <MoveDownIcon />
+                      <DeleteIcon />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <span className="text-sm ml-4 mb-4 italic">No data</span>
+        )}
       </details>
     </div>
   );

@@ -29,6 +29,7 @@ type Props = {
   setUploadedData: React.Dispatch<
     React.SetStateAction<ResponseObject[] | null>
   >;
+  setTabData: React.Dispatch<React.SetStateAction<null | unknown>>;
 };
 
 export interface SortedData extends Row {
@@ -46,6 +47,7 @@ export function SortUploadedDataDialog({
   open,
   uploadedData,
   setUploadedData,
+  setTabData,
 }: Props) {
   const [sortedData, setSortedData] = useState<SortedData[]>([]);
   const [statementOwner, setStatementOwner] = useState<string | null>(null);
@@ -101,7 +103,7 @@ export function SortUploadedDataDialog({
         });
         setUploadedData(null);
         const tabData = await response.json();
-        console.log(tabData);
+        setTabData(tabData);
       } catch (error) {
         console.error(error);
       }

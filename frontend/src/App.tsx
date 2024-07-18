@@ -17,7 +17,7 @@ function App() {
   const [uploadedData, setUploadedData] = useState<null | ResponseObject[]>(
     null,
   );
-  const [tabData, setTabData] = useState(null);
+  const [tabData, setTabData] = useState<null | unknown>(null);
   const { year, month } = useParams<{ year: string; month: string }>();
   const navigate = useNavigate();
   const { userCategoriesSettings } = useUserContext();
@@ -173,6 +173,7 @@ function App() {
           open={uploadedData !== null}
           uploadedData={uploadedData}
           setUploadedData={setUploadedData}
+          setTabData={setTabData}
         />
       )}
     </>

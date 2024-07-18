@@ -1,37 +1,70 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Tab, Tabs } from '@mui/material';
-import { TABS, TRANSACTION_CATEGORIES, FISCAL_YEARS } from './data';
+import { TABS, FISCAL_YEARS } from './data';
 import { a11yProps } from './utils/a11yProps';
 import { UploadCsvForm, ResponseObject } from './components/UploadCsvForm';
 import { CategorySection } from './components/CategorySection';
-import { SortUploadedDataDialog } from './components/SortUploadedDataDialog';
+import {
+  SortUploadedDataDialog,
+  SortedData,
+} from './components/SortUploadedDataDialog';
 import { NoData } from './components/NoData';
+import { useUserContext } from './context/UserContext';
 
 function App() {
-  const [expandedSections, setExpandedSections] = useState([0]);
+  const [expandedSections, setExpandedSections] = useState<number[]>([]);
   const [uploadedData, setUploadedData] = useState<null | ResponseObject[]>(
     null,
   );
+  const [tabData, setTabData] = useState(null);
   const { year, month } = useParams<{ year: string; month: string }>();
   const navigate = useNavigate();
+  const { userCategoriesSettings } = useUserContext();
 
   useEffect(() => {
     if (!year || !month) {
       const currentYear = new Date().getFullYear().toString();
-      navigate(`/${currentYear}/${formatMonth(new Date().getMonth())}`);
+      const currentMonth = formatMonth(new Date().getMonth());
+      getTabData(currentYear, currentMonth);
+      navigate(`/${currentYear}/${currentMonth}`);
+    } else {
+      getTabData(year, month);
     }
   }, []);
 
   const handleTabChange = (_: any, newValue: number) => {
-    navigate(`/${year}/${formatMonth(newValue)}`);
+    if (!year) return;
+    const month = formatMonth(newValue);
+    navigate(`/${year}/${month}`);
+    getTabData(year, month);
   };
 
   const handleYearChange = (year: number) => {
     navigate(`/${year.toString()}/01`);
   };
 
-  const tabData = null;
+  const getTabData = useCallback(
+    async (year: string, month: string) => {
+      const token = localStorage.getItem('token');
+      const response = await fetch(
+        `/transactions?year=${year}&month=${month}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      const jsonTabData = await response.json();
+      if (jsonTabData.length) {
+        setTabData(jsonTabData);
+      } else {
+        setTabData(null);
+      }
+    },
+    [setTabData],
+  );
 
   return (
     <>
@@ -73,13 +106,13 @@ function App() {
               <Tab label={tab.name} key={tab.name} {...a11yProps(i)} />
             ))}
           </Tabs>
-          {tabData ? (
+          {tabData && userCategoriesSettings ? (
             <>
               <div className="flex gap-10">
                 <button
                   onClick={() =>
                     setExpandedSections(
-                      TRANSACTION_CATEGORIES.map((_, ind) => ind),
+                      userCategoriesSettings.map((cat) => Number(cat.id)),
                     )
                   }
                 >
@@ -92,16 +125,33 @@ function App() {
               </div>
               {month && (
                 <div>
-                  {TRANSACTION_CATEGORIES.map((cat, index) => (
-                    <CategorySection
-                      key={cat.name}
-                      activeTab={Number(month) - 1}
-                      id={index}
-                      category={cat}
-                      expandedSections={expandedSections}
-                      setExpandedSections={setExpandedSections}
-                    />
-                  ))}
+                  {userCategoriesSettings.map((cat) => {
+                    // @ts-ignore
+                    const sectionData: SortedData[] = tabData
+                      // @ts-ignore
+                      .filter((d) => cat.id === d['category_id'])
+                      // @ts-ignore
+                      .map((d) => ({
+                        id: d.id,
+                        date: d.date,
+                        description: d.description,
+                        memo: d.memo,
+                        subcategory: d['parent_category_name'],
+                        amount: d.amount,
+                        paidBy: d['payer_name'],
+                      }));
+                    return (
+                      <CategorySection
+                        key={cat.name}
+                        activeTab={Number(month) - 1}
+                        id={Number(cat.id)}
+                        category={cat}
+                        expandedSections={expandedSections}
+                        setExpandedSections={setExpandedSections}
+                        sectionData={sectionData}
+                      />
+                    );
+                  })}
                 </div>
               )}
             </>

@@ -11,7 +11,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import MoveDownIcon from '@mui/icons-material/MoveDown';
 import CalculateIcon from '@mui/icons-material/Calculate';
-import { TABS, TRANSACTION_COLUMNS, data, TransactionCategory } from '../data';
+import { TABS, TRANSACTION_COLUMNS, TransactionCategory } from '../data';
+import { SortedData } from './SortUploadedDataDialog';
 
 type Props = {
   activeTab: number;
@@ -19,6 +20,7 @@ type Props = {
   category: TransactionCategory;
   expandedSections: number[];
   setExpandedSections: React.Dispatch<React.SetStateAction<number[]>>;
+  sectionData: SortedData[];
 };
 
 export function CategorySection({
@@ -27,6 +29,7 @@ export function CategorySection({
   category,
   expandedSections,
   setExpandedSections,
+  sectionData,
 }: Props) {
   const finalCategoryColumns = category.subcategories
     ? TRANSACTION_COLUMNS.slice(0, 3)
@@ -77,24 +80,23 @@ export function CategorySection({
             </TableRow>
           </TableHead>
           <TableBody>
-            {activeTab === 0 &&
-              data.map((d) => (
-                <TableRow key={d.id}>
-                  <TableCell>{d.date}</TableCell>
-                  <TableCell>{d.description}</TableCell>
-                  <TableCell>{d.memo}</TableCell>
-                  {category.subcategories && <TableCell>testing</TableCell>}
-                  <TableCell>${d.amount}</TableCell>
-                  <TableCell>{d.paidBy ?? 'N/A'}</TableCell>
-                  <TableCell>
-                    <div className="flex gap-3">
-                      <EditIcon />
-                      <MoveDownIcon />
-                      <DeleteIcon />
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+            {sectionData.map((d) => (
+              <TableRow key={d.id}>
+                <TableCell>{d.date}</TableCell>
+                <TableCell>{d.description}</TableCell>
+                <TableCell>{d.memo}</TableCell>
+                {d.subcategory && <TableCell>{d.subcategory}</TableCell>}
+                <TableCell>${d.amount}</TableCell>
+                <TableCell>{d.paidBy ?? 'N/A'}</TableCell>
+                <TableCell>
+                  <div className="flex gap-3">
+                    <EditIcon />
+                    <MoveDownIcon />
+                    <DeleteIcon />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </details>

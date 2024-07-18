@@ -31,7 +31,7 @@ type Props = {
   >;
 };
 
-interface SortedData extends Row {
+export interface SortedData extends Row {
   category?: string;
   subcategory?: string;
 }

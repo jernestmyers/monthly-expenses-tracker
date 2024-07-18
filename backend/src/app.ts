@@ -7,6 +7,7 @@ import passport from './configs/passport';
 import filesRoutes from './routes/files';
 import authRoutes from './routes/auth';
 import settingsRoutes from './routes/settings';
+import transactionsRoutes from './routes/transactions';
 
 dotenv.config({ path: '../.env' });
 
@@ -20,6 +21,7 @@ app.use(passport.initialize());
 app.use('/auth', authRoutes);
 app.use('/settings', settingsRoutes);
 app.use('/files', filesRoutes);
+app.use('/transactions', transactionsRoutes);
 
 app.use(
   express.static(path.join(__dirname.split('backend')[0], 'frontend', 'build')),

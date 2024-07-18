@@ -23,9 +23,15 @@ ultimately this web app is for personal use and its current trajectory is to sui
 
 ## notes/todos
 
-- configure postgres database
-- enable transaction edits
+functionality:
+
+- enable CRUD for transactions during both upload and monthly UIs
 - implement category tooltip summaries
 - implement monthly summaries
-- implement year-in-review summary? (this data may exist anyway in the monthly summaries if any YTD calcs are included)
-- allow for user profiles that customize transaction categories and the payees? once created, can these customizations be edited? how will persisted data get updated, or should it no longer be editable?
+- configure manual entry for transactions
+
+optimizations:
+
+- improve UI
+- add a second step to the upload dialog that asks if the statement is a personal card and use response to auto-populate the appropriate personal category (very specific for our use-case)?
+- in configuring user settings, canceling the edits should revert to original/persisted state

@@ -183,9 +183,10 @@ export function ConfigureUserCategories({
   return (
     <ul className="w-fit mt-3">
       {userCategories
-        .filter((cat) => !Boolean(cat.isDeleted))
+        .filter((cat) => !cat.isDeleted)
         .map((cat) => (
           <CategoryListItem
+            key={cat.id}
             category={cat}
             handleAddSubcategory={handleAddSubcategory}
             onCategoryChange={onCategoryChange}
@@ -196,6 +197,7 @@ export function ConfigureUserCategories({
         ))}
       {newUserCategories.map((newCat) => (
         <CategoryListItem
+          key={newCat.id}
           category={newCat}
           handleAddSubcategory={handleAddSubcategory}
           onCategoryChange={onCategoryChange}
@@ -280,9 +282,9 @@ function CategoryListItem({
       {'subcategories' in category && (
         <ul className="ml-16">
           {category.subcategories
-            ?.filter((subcat) => !Boolean(subcat.isDeleted))
+            ?.filter((subcat) => !subcat.isDeleted)
             .map((subcat) => (
-              <li className="flex items-center my-1">
+              <li key={subcat.id} className="flex items-center my-1">
                 <CircleIcon sx={{ fontSize: '0.75rem', margin: '0 1em' }} />
                 <TextField
                   hiddenLabel

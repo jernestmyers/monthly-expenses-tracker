@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Step, StepButton, Stepper } from '@mui/material';
 import { TransactionCategory } from '../../data';
 import { ConfigureUserCategories } from './ConfigureUserCategories';
@@ -6,17 +6,6 @@ import { ConfigurePayers, Payer, NewPayer } from './ConfigurePayers';
 import { ReviewAndSubmitUserSettings } from './ReviewAndSubmitUserSettings';
 import { UserSettings } from './UserSettings';
 import { useUserContext } from '../../context/UserContext';
-
-const DEFAULT_CATEGORIES: TransactionCategory[] = [
-  { id: 1, name: 'Income' },
-  { id: 2, name: 'Bills' },
-  { id: 3, name: 'Groceries' },
-  { id: 4, name: 'Entertainment' },
-  { id: 5, name: 'Transportation' },
-  { id: 6, name: 'Memberships' },
-  { id: 7, name: 'Services' },
-  { id: 8, name: 'Miscellaneous' },
-];
 
 const STEPS = [
   'Household categories and subcategories',

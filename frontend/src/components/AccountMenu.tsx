@@ -7,7 +7,7 @@ import {
   MenuItem,
   Tooltip,
 } from '@mui/material';
-import { Logout, People, Settings } from '@mui/icons-material';
+import { Logout, Settings } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 

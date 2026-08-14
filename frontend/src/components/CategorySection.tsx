@@ -58,7 +58,7 @@ export function CategorySection({
                 <h3>{category.name} Transactions at a glance</h3>
                 <ul>
                   <li>
-                    {TABS[activeTab].name}'s total: <span>$1000</span>
+                    {TABS[activeTab].name}&apos;s total: <span>$1000</span>
                   </li>
                   <li>
                     YTD total: <span>$5000</span>

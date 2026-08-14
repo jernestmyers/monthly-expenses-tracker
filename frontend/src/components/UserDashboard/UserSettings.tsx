@@ -21,7 +21,7 @@ export function UserSettings({
           Your household categories
         </h3>
         {userCategories
-          .filter((cat) => !Boolean(cat.isDeleted))
+          .filter((cat) => !cat.isDeleted)
           .map((cat) => (
             <>
               <li className="text-lg font-medium" key={cat.id}>
@@ -30,16 +30,16 @@ export function UserSettings({
               {cat.subcategories && (
                 <ul className="ml-4">
                   {cat.subcategories
-                    .filter((subcat) => !Boolean(subcat.isDeleted))
+                    .filter((subcat) => !subcat.isDeleted)
                     .map((subcat) => (
-                      <li>{subcat.name}</li>
+                      <li key={subcat.id}>{subcat.name}</li>
                     ))}
                 </ul>
               )}
             </>
           ))}
         {newUserCategories
-          .filter((cat) => !Boolean(cat.isDeleted))
+          .filter((cat) => !cat.isDeleted)
           .map((cat) => (
             <>
               <li className="text-lg font-medium" key={cat.id}>
@@ -48,9 +48,9 @@ export function UserSettings({
               {cat.subcategories && (
                 <ul className="ml-4">
                   {cat.subcategories
-                    .filter((subcat) => !Boolean(subcat.isDeleted))
+                    .filter((subcat) => !subcat.isDeleted)
                     .map((subcat) => (
-                      <li>{subcat.name}</li>
+                      <li key={subcat.id}>{subcat.name}</li>
                     ))}
                 </ul>
               )}

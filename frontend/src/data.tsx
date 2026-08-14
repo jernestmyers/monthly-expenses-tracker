@@ -1,5 +1,3 @@
-import { getUniqueNumericalId } from './utils/getUniqueId';
-
 export type Tab = {
   name: string;
   content: React.ReactNode;
@@ -86,6 +84,18 @@ export type Row = {
   memo: string;
   amount: number;
   paidBy?: string | null;
+};
+
+export type TransactionApiRow = {
+  id: string;
+  date: string;
+  description: string;
+  memo: string;
+  amount: number;
+  category_id: string | number | null;
+  parent_category_id: string | number | null;
+  category_name: string | null;
+  payer_name: string | null;
 };
 
 export const FISCAL_YEARS = [2023, 2024];

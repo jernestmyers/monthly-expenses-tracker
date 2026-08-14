@@ -1,4 +1,4 @@
-import React, {
+import {
   createContext,
   useState,
   useContext,
@@ -6,7 +6,6 @@ import React, {
   useEffect,
 } from 'react';
 import { Payer } from '../components/UserDashboard/ConfigurePayers';
-import { jwtDecode } from 'jwt-decode';
 import { TransactionCategory } from '../data';
 
 export type UserData = {

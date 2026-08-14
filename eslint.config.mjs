@@ -12,5 +12,13 @@ export default [
   pluginReactConfig,
   pluginReactJsxRuntime,
   { settings: { react: { version: 'detect' } } },
+  {
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { ignoreRestSiblings: true },
+      ],
+    },
+  },
   eslintConfigPrettier,
 ];

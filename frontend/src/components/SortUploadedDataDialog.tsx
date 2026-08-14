@@ -18,7 +18,12 @@ import {
   TableRow,
   TableCell,
 } from '@mui/material';
-import { TRANSACTION_COLUMNS, Row, TransactionCategory } from '../data';
+import {
+  TRANSACTION_COLUMNS,
+  Row,
+  TransactionCategory,
+  TransactionApiRow,
+} from '../data';
 import { ResponseObject } from './UploadCsvForm';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useUserContext } from '../context/UserContext';
@@ -29,7 +34,7 @@ type Props = {
   setUploadedData: React.Dispatch<
     React.SetStateAction<ResponseObject[] | null>
   >;
-  setTabData: React.Dispatch<React.SetStateAction<null | unknown>>;
+  setTabData: React.Dispatch<React.SetStateAction<TransactionApiRow[] | null>>;
 };
 
 export interface SortedData extends Row {
@@ -138,6 +143,7 @@ export function SortUploadedDataDialog({
                 >
                   {userPayersSettings.map((p) => (
                     <FormControlLabel
+                      key={p.id}
                       value={p.id}
                       control={<Radio />}
                       label={p.name}
@@ -156,14 +162,14 @@ export function SortUploadedDataDialog({
               <TableHead>
                 <TableRow>
                   {SORT_DATA_COLUMNS.map((col) => (
-                    <TableCell>{col}</TableCell>
+                    <TableCell key={col}>{col}</TableCell>
                   ))}
                   <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {sortedData.map((d) => (
-                  <TableRow>
+                  <TableRow key={d.id}>
                     <TableCell>{d.date}</TableCell>
                     <TableCell>{d.description}</TableCell>
                     <TableCell>{d.memo}</TableCell>
@@ -176,6 +182,7 @@ export function SortUploadedDataDialog({
                           <RadioGroup value={statementOwner}>
                             {userPayersSettings.map((p) => (
                               <FormControlLabel
+                                key={p.id}
                                 value={p.id}
                                 control={
                                   <Radio
@@ -221,7 +228,9 @@ export function SortUploadedDataDialog({
                           value={getValue(d, sortedData, 'category')}
                         >
                           {userCategoriesSettings.map((cat) => (
-                            <MenuItem value={cat.id}>{cat.name}</MenuItem>
+                            <MenuItem key={cat.id} value={cat.id}>
+                              {cat.name}
+                            </MenuItem>
                           ))}
                         </Select>
                       </FormControl>
@@ -308,7 +317,9 @@ function SubcategoriesContent({
             value={getValue(tableData, sortedData, 'subcategory')}
           >
             {category.subcategories.map((cat) => (
-              <MenuItem value={cat.id}>{cat.name}</MenuItem>
+              <MenuItem key={cat.id} value={cat.id}>
+                {cat.name}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>

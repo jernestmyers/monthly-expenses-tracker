@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { SyntheticEvent, useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Tab, Tabs } from '@mui/material';
-import { TABS, FISCAL_YEARS } from './data';
+import { TABS, FISCAL_YEARS, TransactionApiRow } from './data';
 import { a11yProps } from './utils/a11yProps';
 import { UploadCsvForm, ResponseObject } from './components/UploadCsvForm';
 import { CategorySection } from './components/CategorySection';
@@ -17,7 +17,7 @@ function App() {
   const [uploadedData, setUploadedData] = useState<null | ResponseObject[]>(
     null,
   );
-  const [tabData, setTabData] = useState<null | unknown>(null);
+  const [tabData, setTabData] = useState<TransactionApiRow[] | null>(null);
   const { year, month } = useParams<{ year: string; month: string }>();
   const navigate = useNavigate();
   const { userCategoriesSettings } = useUserContext();
@@ -33,7 +33,7 @@ function App() {
     }
   }, []);
 
-  const handleTabChange = (_: any, newValue: number) => {
+  const handleTabChange = (_: SyntheticEvent, newValue: number) => {
     if (!year) return;
     const month = formatMonth(newValue);
     navigate(`/${year}/${month}`);
@@ -126,27 +126,24 @@ function App() {
               {month && (
                 <div>
                   {userCategoriesSettings.map((cat) => {
-                    // @ts-ignore
-                    const sectionData: SortedData[] = tabData
-                      // @ts-ignore
+                    const sectionData: SortedData[] = (tabData ?? [])
                       .filter((d) => {
-                        if (d['parent_category_id']) {
-                          return cat.id === d['parent_category_id'];
+                        if (d.parent_category_id) {
+                          return cat.id === d.parent_category_id;
                         } else {
-                          return cat.id === d['category_id'];
+                          return cat.id === d.category_id;
                         }
                       })
-                      // @ts-ignore
                       .map((d) => ({
                         id: d.id,
                         date: d.date,
                         description: d.description,
                         memo: d.memo,
-                        subcategory: d['parent_category_id']
-                          ? d['category_name']
-                          : null,
+                        subcategory: d.parent_category_id
+                          ? d.category_name ?? undefined
+                          : undefined,
                         amount: d.amount,
-                        paidBy: d['payer_name'],
+                        paidBy: d.payer_name,
                       }));
                     return (
                       <CategorySection

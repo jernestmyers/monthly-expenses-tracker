@@ -86,11 +86,11 @@ export function ReviewAndSubmitUserSettings({
       // what if we instead send the new category with subcats, if they exist, so that we can persist the new cat more easily,
       // receive back the new category's id, then use that id for the subcats' parentId attribute?
       const newCategories: (TransactionCategory | CategoryRequest)[] =
-        newUserCategories.filter((cat) => !Boolean(cat.isDeleted));
+        newUserCategories.filter((cat) => !cat.isDeleted);
       userCategories.forEach((cat) => {
         if ('subcategories' in cat) {
           cat.subcategories
-            ?.filter((subcat) => !Boolean(subcat.isDeleted))
+            ?.filter((subcat) => !subcat.isDeleted)
             .forEach((subcat) => {
               if (typeof subcat.id === 'string') {
                 newCategories.push({
